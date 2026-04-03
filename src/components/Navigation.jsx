@@ -2,18 +2,20 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
 import { personal } from '../data/portfolio'
-
-const navLinks = [
-  { label: 'About', href: '#about' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Experience', href: '#experience' },
-  { label: 'Contact', href: '#contact' },
-]
+import { useLanguage } from '../context/LanguageContext'
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const { lang, toggle, t } = useLanguage()
+
+  const navLinks = [
+    { label: t('nav.about'), href: '#about' },
+    { label: t('nav.projects'), href: '#projects' },
+    { label: t('nav.skills'), href: '#skills' },
+    { label: t('nav.experience'), href: '#experience' },
+    { label: t('nav.contact'), href: '#contact' },
+  ]
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40)
@@ -34,7 +36,7 @@ export default function Navigation() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'py-3 glass border-b border-white/[0.06]'
+            ? 'py-3 bg-[rgba(17,17,17,0.85)] backdrop-blur-xl'
             : 'py-5 bg-transparent'
         }`}
       >
@@ -62,33 +64,82 @@ export default function Navigation() {
             ))}
           </div>
 
-          {/* CTA */}
+          {/* Right side: lang toggle + CTA */}
           <div className="hidden md:flex items-center gap-3">
+            {/* Language toggle */}
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="flex items-center rounded-lg border border-white/[0.08] overflow-hidden"
+            >
+              <button
+                onClick={() => lang !== 'en' && toggle()}
+                className={`px-3 py-1.5 text-xs font-mono tracking-wider transition-all duration-200 ${
+                  lang === 'en'
+                    ? 'bg-white/10 text-zinc-100'
+                    : 'text-zinc-600 hover:text-zinc-400'
+                }`}
+              >
+                EN
+              </button>
+              <div className="w-px h-3.5 bg-white/10" />
+              <button
+                onClick={() => lang !== 'fr' && toggle()}
+                className={`px-3 py-1.5 text-xs font-mono tracking-wider transition-all duration-200 ${
+                  lang === 'fr'
+                    ? 'bg-white/10 text-zinc-100'
+                    : 'text-zinc-600 hover:text-zinc-400'
+                }`}
+              >
+                FR
+              </button>
+            </motion.div>
+
             {personal.availableForWork && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
                 </span>
-                <span className="text-xs text-emerald-400 font-medium">Available</span>
+                <span className="text-xs text-emerald-400 font-medium">{t('nav.available')}</span>
               </div>
             )}
             <button
               onClick={() => handleNavClick('#contact')}
               className="px-4 py-2 text-sm font-medium bg-accent hover:bg-accent/90 text-white rounded-lg transition-all duration-200 shadow-glow-sm hover:shadow-glow-md"
             >
-              Get in touch
+              {t('nav.getInTouch')}
             </button>
           </div>
 
-          {/* Mobile menu toggle */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-2 text-zinc-400 hover:text-zinc-100 hover:bg-white/5 rounded-lg transition-colors"
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          {/* Mobile: lang toggle + menu */}
+          <div className="md:hidden flex items-center gap-2">
+            <div className="flex items-center rounded-lg border border-white/[0.08] overflow-hidden">
+              <button
+                onClick={() => lang !== 'en' && toggle()}
+                className={`px-2.5 py-1 text-xs font-mono transition-all duration-200 ${
+                  lang === 'en' ? 'bg-white/10 text-zinc-100' : 'text-zinc-600'
+                }`}
+              >
+                EN
+              </button>
+              <div className="w-px h-3 bg-white/10" />
+              <button
+                onClick={() => lang !== 'fr' && toggle()}
+                className={`px-2.5 py-1 text-xs font-mono transition-all duration-200 ${
+                  lang === 'fr' ? 'bg-white/10 text-zinc-100' : 'text-zinc-600'
+                }`}
+              >
+                FR
+              </button>
+            </div>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="p-2 text-zinc-400 hover:text-zinc-100 hover:bg-white/5 rounded-lg transition-colors"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </motion.nav>
 
@@ -117,7 +168,7 @@ export default function Navigation() {
                   onClick={() => handleNavClick('#contact')}
                   className="w-full px-4 py-3 text-sm font-medium bg-accent text-white rounded-lg transition-colors"
                 >
-                  Get in touch
+                  {t('nav.getInTouch')}
                 </button>
               </div>
             </div>

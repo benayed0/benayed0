@@ -7,5 +7,5 @@ import react from '@vitejs/plugin-react'
 // change base to '/portfolio/'
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  base: '/benayed0/',
 })

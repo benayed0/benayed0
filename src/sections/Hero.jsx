@@ -1,46 +1,31 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Github, Linkedin, Mail, ChevronDown } from 'lucide-react'
+import { ArrowRight, Linkedin, Mail, ChevronDown } from 'lucide-react'
 import { personal } from '../data/portfolio'
-
-const floatingVariants = {
-  animate: {
-    y: [0, -14, 0],
-    transition: { duration: 6, repeat: Infinity, ease: 'easeInOut' },
-  },
-}
+import { useLanguage } from '../context/LanguageContext'
 
 export default function Hero() {
+  const { t } = useLanguage()
+
   return (
     <section className="relative min-h-screen flex flex-col justify-center overflow-hidden">
       {/* Background effects */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Primary orb */}
         <motion.div
           animate={{ scale: [1, 1.1, 1], opacity: [0.15, 0.22, 0.15] }}
           transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           className="absolute top-[-20%] right-[-10%] w-[700px] h-[700px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(124,58,237,0.3) 0%, rgba(124,58,237,0) 70%)',
-            filter: 'blur(1px)',
-          }}
+          style={{ background: 'radial-gradient(circle, rgba(124,58,237,0.3) 0%, rgba(124,58,237,0) 70%)', filter: 'blur(1px)' }}
         />
-        {/* Secondary orb */}
         <motion.div
           animate={{ scale: [1.1, 1, 1.1], opacity: [0.08, 0.14, 0.08] }}
           transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
           className="absolute bottom-[-10%] left-[-15%] w-[600px] h-[600px] rounded-full"
-          style={{
-            background: 'radial-gradient(circle, rgba(167,139,250,0.2) 0%, rgba(167,139,250,0) 70%)',
-          }}
+          style={{ background: 'radial-gradient(circle, rgba(167,139,250,0.2) 0%, rgba(167,139,250,0) 70%)' }}
         />
-        {/* Grid overlay */}
         <div
           className="absolute inset-0 opacity-[0.025]"
           style={{
-            backgroundImage: `
-              linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)
-            `,
+            backgroundImage: `linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)`,
             backgroundSize: '80px 80px',
           }}
         />
@@ -61,7 +46,7 @@ export default function Hero() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span className="text-emerald-400 font-medium">Open to opportunities</span>
+                <span className="text-emerald-400 font-medium">{t('nav.openTo')}</span>
                 <span className="text-zinc-600">·</span>
                 <span className="text-zinc-500">{personal.location}</span>
               </div>
@@ -90,9 +75,9 @@ export default function Hero() {
             className="mb-6"
           >
             <p className="text-xl sm:text-2xl md:text-3xl font-medium text-zinc-300 leading-snug tracking-tight max-w-2xl">
-              Full-stack engineer building{' '}
-              <span className="text-accent-light">AI-powered products</span>
-              {' '}and scalable software systems.
+              {t('hero.tagline1')}{' '}
+              <span className="text-accent-light">{t('hero.tagline2')}</span>
+              {' '}{t('hero.tagline3')}
             </p>
           </motion.div>
 
@@ -103,7 +88,7 @@ export default function Hero() {
             transition={{ duration: 0.7, ease: 'easeOut', delay: 0.3 }}
             className="text-zinc-500 text-base sm:text-lg leading-relaxed max-w-xl mb-12"
           >
-            {personal.bio}
+            {t('hero.bio')}
           </motion.p>
 
           {/* CTAs */}
@@ -120,7 +105,7 @@ export default function Hero() {
               whileTap={{ scale: 0.97 }}
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-accent hover:bg-accent/90 text-white font-medium rounded-xl transition-all duration-200 shadow-glow-sm hover:shadow-glow-md text-sm"
             >
-              View Projects
+              {t('hero.viewProjects')}
               <ArrowRight size={16} />
             </motion.a>
             <motion.a
@@ -130,7 +115,7 @@ export default function Hero() {
               whileTap={{ scale: 0.97 }}
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/5 hover:bg-white/10 text-zinc-100 font-medium rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 text-sm"
             >
-              Contact Me
+              {t('hero.contactMe')}
             </motion.a>
           </motion.div>
 
@@ -142,7 +127,6 @@ export default function Hero() {
             className="flex items-center gap-5"
           >
             {[
-              { href: personal.github, icon: Github, label: 'GitHub' },
               { href: personal.linkedin, icon: Linkedin, label: 'LinkedIn' },
               { href: `mailto:${personal.email}`, icon: Mail, label: 'Email' },
             ].map(({ href, icon: Icon, label }) => (
@@ -170,7 +154,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2"
       >
         <motion.div
           animate={{ y: [0, 6, 0] }}
