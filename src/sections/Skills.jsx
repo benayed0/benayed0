@@ -18,7 +18,7 @@ const categoryAccents = {
   'Cloud / DevOps': { color: '#38bdf8', bg: 'rgba(56,189,248,0.08)', border: 'rgba(56,189,248,0.18)' },
 }
 
-const extraSkills = ['Stripe', 'Cloudflare R2', 'AWS Route53', 'OVH API', 'Fly.io', 'Docker', 'CI/CD', 'WordPress', 'Redis', 'Linux']
+const extraSkills = ['Stripe', 'Cloudflare R2', 'Yjs CRDT', 'Prisma RLS', 'Factur-X', 'WordPress', 'FFmpeg', 'Mailjet', 'GitHub Actions', 'Linux']
 
 export default function Skills() {
   const { t } = useLanguage()

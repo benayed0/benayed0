@@ -20,7 +20,7 @@ export const projects = [
   {
     id: 1,
     title: 'MyPubli Cloud',
-    tech: ['Angular', 'NestJS', 'Python', 'AWS Route53', 'OVH API', 'Shell'],
+    tech: ['Angular', 'NestJS', 'Python', 'Yjs', 'OpenAI', 'OVH API', 'Grafana'],
     live: null,
     featured: true,
     accent: '#7c3aed',
@@ -52,7 +52,7 @@ export const projects = [
   {
     id: 5,
     title: 'Landwash',
-    tech: ['Flutter', 'Dart', 'NestJS', 'TypeScript', 'WordPress'],
+    tech: ['Flutter', 'Dart', 'NestJS', 'MongoDB', 'Firebase', 'WordPress'],
     live: null,
     featured: false,
     accent: '#0e7490',
@@ -84,7 +84,7 @@ export const projects = [
   {
     id: 9,
     title: 'Christian Brinck',
-    tech: ['TypeScript', 'NestJS', 'Python', 'AI'],
+    tech: ['TypeScript', 'NestJS', 'Python', 'Whisper', 'AWS S3'],
     live: null,
     featured: false,
     accent: '#475569',
@@ -92,7 +92,7 @@ export const projects = [
   {
     id: 10,
     title: 'HCS',
-    tech: ['TypeScript', 'NestJS', 'Python', 'AI'],
+    tech: ['Python', 'WhisperX', 'GPT-4', 'Ollama', 'Docker', 'Angular'],
     live: null,
     featured: false,
     accent: '#be185d',
@@ -100,7 +100,7 @@ export const projects = [
   {
     id: 11,
     title: 'SIAM',
-    tech: ['TypeScript', 'NestJS', 'Angular'],
+    tech: ['TypeScript', 'NestJS', 'Angular', 'MongoDB'],
     live: null,
     featured: false,
     accent: '#1d4ed8',
@@ -143,27 +143,27 @@ export const skills = [
   {
     category: 'Frontend',
     icon: 'Layout',
-    items: ['Angular', 'Next.js', 'TypeScript', 'Tailwind CSS', 'SSR', 'Turborepo'],
+    items: ['Angular (Signals, SSR)', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Turborepo / Nx', 'Socket.io'],
   },
   {
     category: 'Mobile',
     icon: 'Smartphone',
-    items: ['Flutter', 'Dart', 'Firebase', 'Push Notifications', 'Cloudinary', 'Dart FFI'],
+    items: ['Flutter', 'Dart', 'FCM Push Notifications', 'Google Maps SDK', 'Hive (offline)', 'Geospatial'],
   },
   {
     category: 'Backend',
     icon: 'Server',
-    items: ['NestJS', 'Node.js', 'Python', 'PostgreSQL', 'Prisma', 'BullMQ'],
+    items: ['NestJS', 'Python (FastAPI)', 'PostgreSQL', 'MongoDB', 'Prisma / Mongoose', 'BullMQ + Redis'],
   },
   {
     category: 'AI / ML',
     icon: 'Brain',
-    items: ['OpenAI API', 'Video Generation', 'Audio Synthesis', 'GPU Inference', 'Jupyter', 'FFmpeg'],
+    items: ['OpenAI API (GPT-4o)', 'WhisperX', 'Ollama (local LLMs)', 'Speaker Diarization', 'GPU Inference', 'Playwright scraping'],
   },
   {
     category: 'Cloud / DevOps',
     icon: 'Cloud',
-    items: ['AWS Route53', 'OVH API', 'Git Auto-deploy', 'Docker', 'CI/CD', 'Linux'],
+    items: ['AWS EC2 / S3 / SDK', 'OVH / Tailscale VPN', 'Grafana + Loki + Prometheus', 'Docker + Nginx', 'Serverless Framework', 'Fly.io / Neon'],
   },
 ]
 
