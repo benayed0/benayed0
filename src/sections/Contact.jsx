@@ -42,7 +42,7 @@ export default function Contact() {
 
         <motion.div
           variants={itemVariants}
-          className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto"
         >
           {links.map((link, i) => {
             const Icon = linkIcons[i]

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Layout, Server, Brain, Cloud } from 'lucide-react'
+import { Layout, Server, Brain, Smartphone, Cloud } from 'lucide-react'
 import SectionWrapper, {
   SectionLabel,
   SectionHeading,
@@ -8,16 +8,17 @@ import SectionWrapper, {
 import { skills } from '../data/portfolio'
 import { useLanguage } from '../context/LanguageContext'
 
-const iconMap = { Layout, Server, Brain, Cloud }
+const iconMap = { Layout, Server, Brain, Smartphone, Cloud }
 
 const categoryAccents = {
   Frontend: { color: '#60a5fa', bg: 'rgba(96,165,250,0.08)', border: 'rgba(96,165,250,0.18)' },
-  Backend: { color: '#34d399', bg: 'rgba(52,211,153,0.08)', border: 'rgba(52,211,153,0.18)' },
+  Mobile: { color: '#34d399', bg: 'rgba(52,211,153,0.08)', border: 'rgba(52,211,153,0.18)' },
+  Backend: { color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.18)' },
   'AI / ML': { color: '#a78bfa', bg: 'rgba(167,139,250,0.08)', border: 'rgba(167,139,250,0.18)' },
-  'Cloud / DevOps': { color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.18)' },
+  'Cloud / DevOps': { color: '#38bdf8', bg: 'rgba(56,189,248,0.08)', border: 'rgba(56,189,248,0.18)' },
 }
 
-const extraSkills = ['Go', 'Rust (basics)', 'Prisma', 'tRPC', 'Zustand', 'Playwright', 'Stripe', 'WebSockets']
+const extraSkills = ['Stripe', 'Cloudflare R2', 'AWS Route53', 'OVH API', 'Fly.io', 'Docker', 'CI/CD', 'WordPress', 'Redis', 'Linux']
 
 export default function Skills() {
   const { t } = useLanguage()
@@ -34,7 +35,7 @@ export default function Skills() {
         </SectionHeading>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {skills.map((group, groupIndex) => {
           const Icon = iconMap[group.icon] || Layout
           const accent = categoryAccents[group.category] || categoryAccents['Frontend']

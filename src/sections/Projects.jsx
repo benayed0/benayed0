@@ -57,24 +57,6 @@ function FeaturedProjectCard({ project, t }) {
 
         <p className="text-zinc-400 text-base leading-relaxed mb-8 max-w-2xl">{description}</p>
 
-        {/* Placeholder visual */}
-        <div
-          className="relative w-full h-40 md:h-52 rounded-xl mb-8 overflow-hidden"
-          style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }}
-        >
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="flex flex-col items-center gap-3 opacity-20">
-              <div className="w-16 h-1.5 rounded-full" style={{ background: project.accent }} />
-              <div className="w-10 h-1.5 rounded-full" style={{ background: project.accent, opacity: 0.5 }} />
-              <div className="w-14 h-1.5 rounded-full" style={{ background: project.accent, opacity: 0.3 }} />
-            </div>
-          </div>
-          <div className="absolute top-3 left-3 w-2 h-2 rounded-full opacity-40" style={{ background: project.accent }} />
-          <div className="absolute top-3 left-7 w-2 h-2 rounded-full opacity-20" style={{ background: project.accent }} />
-          <div className="absolute bottom-0 right-0 w-32 h-32 rounded-full opacity-10"
-            style={{ background: `radial-gradient(circle, ${project.accent}, transparent)`, transform: 'translate(30%, 30%)' }} />
-        </div>
-
         <div className="flex flex-wrap gap-2">
           {project.tech.map((t) => <Badge key={t}>{t}</Badge>)}
         </div>
