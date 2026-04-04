@@ -11,88 +11,74 @@ import { projects } from '../data/portfolio'
 import { useLanguage } from '../context/LanguageContext'
 import { useCursor } from '../context/CursorContext'
 
-const PREVIEW_W = 360
-const PREVIEW_H = 230
+const PREVIEW_W = 280
+const PREVIEW_H = 90
+
+// ─── Favicon or monogram fallback ─────────────────────────────────────────────
+function ProjectIcon({ project, size = 20 }) {
+  const [failed, setFailed] = useState(false)
+
+  const monogram = (
+    <div style={{
+      width: size, height: size, borderRadius: 4, flexShrink: 0,
+      background: `${project.accent}22`, border: `1px solid ${project.accent}30`,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontSize: size * 0.45, fontWeight: 700, color: project.accent, fontFamily: 'monospace',
+    }}>
+      {project.title[0]}
+    </div>
+  )
+
+  if (!project.favicon || failed) return monogram
+
+  return (
+    <img
+      src={import.meta.env.BASE_URL.replace(/\/$/, '') + project.favicon}
+      alt=""
+      width={size}
+      height={size}
+      style={{ borderRadius: 4, objectFit: 'contain', flexShrink: 0 }}
+      onError={() => setFailed(true)}
+    />
+  )
+}
 
 // ─── Sliding strip of all project previews ────────────────────────────────────
 function PreviewStrip({ activeIndex, t }) {
   return (
-    <div style={{ width: PREVIEW_W, height: PREVIEW_H, overflow: 'hidden', borderRadius: 18 }}>
-      {/* Slides to reveal the active project */}
+    <div style={{ width: PREVIEW_W, height: PREVIEW_H, overflow: 'hidden', borderRadius: 14 }}>
       <motion.div
         animate={{ y: -activeIndex * PREVIEW_H }}
-        transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+        transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
         style={{ willChange: 'transform' }}
       >
-        {projects.map((project, i) => {
-          const description = t(`projects.items.${project.id}.description`)
-          return (
-            <div
-              key={project.id}
-              style={{
-                width: PREVIEW_W,
-                height: PREVIEW_H,
-                background: `linear-gradient(140deg, #0f0f0f 0%, ${project.accent}22 55%, ${project.accent}0a 100%)`,
-                border: `1px solid ${project.accent}30`,
-                borderRadius: 18,
-                padding: '22px 22px 18px',
-                display: 'flex',
-                flexDirection: 'column',
-                boxSizing: 'border-box',
-              }}
-            >
-              {/* Header row */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                <span style={{ fontFamily: 'monospace', fontSize: 11, color: project.accent, opacity: 0.9 }}>
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-                <div style={{ height: 1, flex: 1, background: `linear-gradient(90deg, ${project.accent}60, transparent)` }} />
-                {project.featured && (
-                  <span style={{
-                    fontSize: 8, fontFamily: 'monospace', letterSpacing: '0.1em',
-                    color: project.accent, padding: '2px 7px', borderRadius: 99,
-                    background: `${project.accent}18`, border: `1px solid ${project.accent}28`,
-                  }}>
-                    FEATURED
-                  </span>
-                )}
-              </div>
-
-              {/* Title */}
-              <div style={{ fontSize: 20, fontWeight: 700, color: '#f4f4f5', marginBottom: 7, lineHeight: 1.2 }}>
+        {projects.map((project) => (
+          <div
+            key={project.id}
+            style={{
+              width: PREVIEW_W,
+              height: PREVIEW_H,
+              background: `linear-gradient(120deg, #111 0%, ${project.accent}18 100%)`,
+              border: `1px solid ${project.accent}28`,
+              borderRadius: 14,
+              padding: '14px 16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              boxSizing: 'border-box',
+            }}
+          >
+            <ProjectIcon project={project} size={32} />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5, minWidth: 0 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#e4e4e7', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 {project.title}
               </div>
-
-              {/* Description */}
-              <div style={{
-                fontSize: 11, color: '#71717a', lineHeight: 1.65, flex: 1,
-                overflow: 'hidden',
-                display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
-              }}>
-                {description}
-              </div>
-
-              {/* Tech pills */}
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 10 }}>
-                {project.tech.slice(0, 4).map((tech) => (
-                  <span key={tech} style={{
-                    fontSize: 10, padding: '2px 8px', borderRadius: 5,
-                    background: `${project.accent}14`, color: `${project.accent}cc`,
-                    border: `1px solid ${project.accent}22`,
-                    fontFamily: 'monospace',
-                  }}>
-                    {tech}
-                  </span>
-                ))}
-                {project.tech.length > 4 && (
-                  <span style={{ fontSize: 10, color: '#52525b', fontFamily: 'monospace', padding: '2px 0' }}>
-                    +{project.tech.length - 4}
-                  </span>
-                )}
+              <div style={{ fontSize: 11, color: '#71717a', lineHeight: 1.4 }}>
+                {t(`projects.items.${project.id}.tagline`)}
               </div>
             </div>
-          )
-        })}
+          </div>
+        ))}
       </motion.div>
     </div>
   )
@@ -103,9 +89,8 @@ function ProjectCursorElements({ active, activeIndex, t }) {
   const mx = useMotionValue(-500)
   const my = useMotionValue(-500)
 
-  // Each follows at a different speed — layered trailing effect
-  const previewX = useSpring(mx, { stiffness: 100, damping: 22 })  // slowest
-  const previewY = useSpring(my, { stiffness: 100, damping: 22 })
+  const previewX = useSpring(mx, { stiffness: 160, damping: 28 })
+  const previewY = useSpring(my, { stiffness: 160, damping: 28 })
 
   useEffect(() => {
     const onMove = (e) => {
@@ -182,6 +167,11 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
           {String(index + 1).padStart(2, '0')}
         </span>
 
+        {/* Favicon */}
+        <div className="shrink-0 opacity-60 group-hover:opacity-100 transition-opacity duration-300">
+          <ProjectIcon project={project} size={20} />
+        </div>
+
         {/* Title + badge */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <h3 className="text-base md:text-lg font-semibold text-zinc-400 group-hover:text-white transition-colors duration-300 truncate">
@@ -257,7 +247,7 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
                   onClick={(e) => e.stopPropagation()}
                 >
                   <ExternalLink size={12} />
-                  Visit live site
+                  {t('projects.visitLive')}
                 </a>
               )}
             </div>

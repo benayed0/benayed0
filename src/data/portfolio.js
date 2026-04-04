@@ -14,8 +14,8 @@ export const personal = {
 }
 
 export const stats = [
-  { value: '4+', label: 'Years of\nexperience' },
-  { value: '20+', label: 'Projects\nshipped' },
+  { value: '5+', label: 'Years of\nexperience' },
+  { value: '15+', label: 'Projects\nshipped' },
   { value: 'Full', label: 'Stack\nengineer' },
   { value: 'AI', label: 'Native\nbuilder' },
 ]
@@ -24,6 +24,8 @@ export const projects = [
   {
     id: 1,
     title: 'MyPubli AI',
+    tagline: 'Real-time collaborative AI writing for researchers.',
+    favicon: '/favicons/mypubli.ico',
     tech: ['Angular', 'NestJS', 'Python', 'Yjs', 'OpenAI', 'OVH API', 'Grafana'],
     featured: true,
     accent: '#7c3aed',
@@ -32,6 +34,8 @@ export const projects = [
   {
     id: 2,
     title: 'Dream Time',
+    tagline: 'Premium watch e-commerce for Tunisia, bilingual with RTL.',
+    favicon: '/favicons/dreamtime.ico',
     tech: ['Angular', 'NestJS', 'Prisma', 'Neon', 'TypeScript'],
     live: null,
     featured: false,
@@ -40,6 +44,8 @@ export const projects = [
   {
     id: 3,
     title: 'ParkUp',
+    tagline: 'From parking spot to payment — end-to-end in one platform.',
+    favicon: '/favicons/parkup.png',
     tech: ['Flutter', 'Dart', 'NestJS', 'TypeScript', 'Angular'],
     featured: false,
     accent: '#059669',
@@ -48,6 +54,8 @@ export const projects = [
   {
     id: 4,
     title: 'Loopa',
+    tagline: 'API-first SaaS with a clean frontend and dedicated marketing site.',
+    favicon: '/favicons/loopa.png',
     tech: ['TypeScript', 'NestJS', 'Angular'],
     live: null,
     featured: false,
@@ -56,6 +64,8 @@ export const projects = [
   {
     id: 5,
     title: 'Landwash',
+    tagline: 'On-demand car wash marketplace with real-time slot booking.',
+    favicon: '/favicons/landwash.png',
     tech: ['Flutter', 'Dart', 'NestJS', 'MongoDB', 'Firebase', 'WordPress'],
     featured: false,
     accent: '#0e7490',
@@ -64,6 +74,8 @@ export const projects = [
   {
     id: 6,
     title: 'Phonix',
+    tagline: '5 years. One platform. Therapists, parents, kids, and doctors — united.',
+    favicon: '/favicons/phonix.png',
     tech: ['TypeScript', 'NestJS', 'Angular'],
     live: 'https://phonixhealth.com',
     featured: false,
@@ -72,6 +84,8 @@ export const projects = [
   {
     id: 7,
     title: 'Touraxi',
+    tagline: 'Tunisia in your pocket — transport and tourism, natively mobile.',
+    favicon: null,
     tech: ['Flutter', 'Dart'],
     live: null,
     featured: false,
@@ -80,6 +94,8 @@ export const projects = [
   {
     id: 8,
     title: 'Sensor Sensei',
+    tagline: 'Edge sensor data ingested live and visualized in the browser.',
+    favicon: null,
     tech: ['Next.js', 'TypeScript', 'Firebase', 'Chart.js'],
     live: null,
     featured: false,
@@ -88,6 +104,8 @@ export const projects = [
   {
     id: 9,
     title: 'Christian Brinck',
+    tagline: 'Research platform with AI audio transcription, built end-to-end.',
+    favicon: '/favicons/christian-brinck.ico',
     tech: ['TypeScript', 'NestJS', 'Python', 'Whisper', 'AWS S3'],
     featured: false,
     accent: '#475569',
@@ -96,6 +114,8 @@ export const projects = [
   {
     id: 10,
     title: 'HCS',
+    tagline: 'AI that scores how well doctors communicate with patients.',
+    favicon: '/favicons/hcs.ico',
     tech: ['Python', 'WhisperX', 'GPT-4', 'Ollama', 'Docker', 'Angular'],
     live: null,
     featured: false,
@@ -104,6 +124,8 @@ export const projects = [
   {
     id: 11,
     title: 'SIAM',
+    tagline: 'Full ERP for logistics — drivers, trucks, and payroll in one place.',
+    favicon: '/favicons/siam.ico',
     tech: ['TypeScript', 'NestJS', 'Angular', 'MongoDB'],
     live: null,
     featured: false,
@@ -112,6 +134,8 @@ export const projects = [
   {
     id: 12,
     title: 'Factunorm',
+    tagline: 'Legally compliant e-invoicing for French micro-entrepreneurs.',
+    favicon: '/favicons/factunorm.ico',
     tech: ['TypeScript', 'NestJS'],
     featured: false,
     accent: '#4f46e5',
@@ -120,6 +144,8 @@ export const projects = [
   {
     id: 13,
     title: 'Cashflow',
+    tagline: '30-day cash flow forecasting with automatic solvency scoring.',
+    favicon: '/favicons/cashflow.ico',
     tech: ['TypeScript', 'NestJS', 'Angular'],
     featured: false,
     accent: '#15803d',
@@ -128,6 +154,8 @@ export const projects = [
   {
     id: 14,
     title: 'Quittance',
+    tagline: 'Generate rental receipts instantly — no server, no signup.',
+    favicon: null,
     tech: ['TypeScript', 'HTML', 'CSS'],
     live: null,
     featured: false,
@@ -136,6 +164,8 @@ export const projects = [
   {
     id: 15,
     title: 'Toopeti',
+    tagline: 'Web content in, publish-ready reels out — fully automated.',
+    favicon: null,
     tech: ['Python', 'NestJS', 'TypeScript', 'AI', 'FFmpeg'],
     live: null,
     featured: false,
@@ -176,16 +206,16 @@ export const experience = [
     role: 'Full-Stack Engineer',
     company: 'MyPubli',
     period: '2025 — Present',
-    description: 'Building a cloud publishing platform from the ground up — Angular frontend, NestJS API, Python AI pipeline, and automated infrastructure with dynamic subdomain assignment and git-based instance updates.',
-    highlights: ['Cloud infrastructure', 'Automated deployment', 'AI pipeline'],
+    description: 'Building an AI-powered scientific publishing platform — real-time multi-user editing with Yjs CRDT, a multi-source reference resolver (DOI → CrossRef → PubMed → Scholar → ORCID), OpenAI integration with per-article cost tracking, and fully automated OVH infrastructure with dynamic subdomain assignment and Grafana observability.',
+    highlights: ['Yjs CRDT collaboration', 'Multi-source reference resolver', 'Automated infrastructure', 'Grafana observability'],
     current: true,
   },
   {
     role: 'Full-Stack Engineer',
     company: 'Phonix Health',
     period: '2020 — 2025',
-    description: 'Spent 5 years building and scaling phonixhealth.com — from early-stage development to a production health platform. Delivered the Angular frontend, NestJS API, AI module, GPU inference server, and multiple client projects along the way.',
-    highlights: ['Health platform', 'GPU inference', 'Client delivery'],
+    description: 'Spent 5 years owning the full stack at Phonix Health — built the Angular frontend, NestJS API, AI module, and GPU inference server from the ground up. Delivered multiple AI-heavy client projects on top: a doctor-patient communication scorer (WhisperX + GPT-4), a research platform with audio transcription, and an on-demand car wash marketplace.',
+    highlights: ['Multi-tenant health SaaS', 'GPU inference server', 'WhisperX + GPT-4 scoring', 'AI client projects'],
     current: false,
   },
 ]

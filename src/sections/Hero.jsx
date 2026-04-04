@@ -1,7 +1,9 @@
 import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { ArrowRight, Linkedin, Mail, ChevronDown, Globe } from 'lucide-react'
-import { personal } from '../data/portfolio'
+import { ArrowRight, Linkedin, Mail, ChevronDown, Globe, Download } from 'lucide-react'
+import { personal, experience, skills, projects } from '../data/portfolio'
 import { useLanguage } from '../context/LanguageContext'
+import { pdf } from '@react-pdf/renderer'
+import CVDocument from '../components/CVDocument'
 
 // ─── Letter-by-letter reveal with perspective flip ───────────────────────────
 function SplitText({ text, delay = 0, stagger = 0.045, className }) {
@@ -31,7 +33,7 @@ function SplitText({ text, delay = 0, stagger = 0.045, className }) {
 }
 
 // ─── Magnetic CTA button ──────────────────────────────────────────────────────
-function MagneticButton({ href, onClick, className, children }) {
+function MagneticButton({ href, onClick, className, children, download }) {
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const sx = useSpring(x, { stiffness: 180, damping: 16 })
@@ -49,6 +51,7 @@ function MagneticButton({ href, onClick, className, children }) {
     <motion.a
       href={href}
       onClick={onClick}
+      download={download}
       style={{ x: sx, y: sy }}
       onPointerMove={handleMove}
       onPointerLeave={handleLeave}
@@ -76,6 +79,16 @@ const TAGS = [
 
 export default function Hero() {
   const { t } = useLanguage()
+
+  const handleDownloadCV = async () => {
+    const blob = await pdf(<CVDocument />).toBlob()
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'Aziz_Ben_Ayed_CV.pdf'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <section
@@ -270,6 +283,21 @@ export default function Hero() {
               className="inline-flex items-center gap-2 px-7 py-3.5 bg-white/5 hover:bg-white/10 text-zinc-100 font-medium rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 text-sm"
             >
               {t('hero.contactMe')}
+            </MagneticButton>
+
+            <MagneticButton
+              href="#"
+              onClick={(e) => { e.preventDefault(); handleDownloadCV() }}
+              className="group relative inline-flex items-center gap-2 px-7 py-3.5 bg-white/5 hover:bg-white/8 text-zinc-400 hover:text-zinc-100 font-medium rounded-xl border border-white/10 hover:border-accent/30 transition-all duration-200 text-sm overflow-hidden"
+            >
+              <span className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-[200%] bg-gradient-to-r from-transparent via-white/5 to-transparent transition-transform duration-700 ease-in-out" />
+              <motion.span
+                animate={{ y: [0, 2, 0] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Download size={15} />
+              </motion.span>
+              {t('hero.downloadCV')}
             </MagneticButton>
           </motion.div>
 
