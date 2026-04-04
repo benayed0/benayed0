@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
-import { ExternalLink, ArrowUpRight, ChevronDown, X, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowUpRight, ChevronDown, X, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react'
 import SectionWrapper, {
   SectionLabel,
   SectionHeading,
@@ -590,10 +590,29 @@ function FeaturedProjectCard({ project, index, t, isHero }) {
 
       {/* Title */}
       <div>
-        <h3 style={{ fontSize: isHero ? 22 : 18, fontWeight: 700, color: '#e4e4e7', lineHeight: 1.2, marginBottom: 6 }}>
-          {project.title}
-        </h3>
-        <p style={{ fontSize: 13, color: '#71717a', lineHeight: 1.5 }}>
+        {project.live ? (
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 group/title"
+            style={{ textDecoration: 'none' }}
+          >
+            <h3 style={{ fontSize: isHero ? 22 : 18, fontWeight: 700, color: '#e4e4e7', lineHeight: 1.2, transition: 'color 0.2s' }}
+              className="group-hover/title:!text-white"
+            >
+              {project.title}
+            </h3>
+            <ArrowUpRight size={isHero ? 16 : 14} style={{ color: project.accent, opacity: 0.6, transition: 'opacity 0.2s, transform 0.2s', flexShrink: 0 }}
+              className="group-hover/title:!opacity-100 group-hover/title:translate-x-0.5 group-hover/title:-translate-y-0.5"
+            />
+          </a>
+        ) : (
+          <h3 style={{ fontSize: isHero ? 22 : 18, fontWeight: 700, color: '#e4e4e7', lineHeight: 1.2 }}>
+            {project.title}
+          </h3>
+        )}
+        <p style={{ fontSize: 13, color: '#71717a', lineHeight: 1.5, marginTop: 6 }}>
           {t(`projects.items.${project.id}.tagline`)}
         </p>
       </div>
@@ -655,19 +674,6 @@ function FeaturedProjectCard({ project, index, t, isHero }) {
         )}
       </div>
 
-      {/* Live link */}
-      {project.live && (
-        <a
-          href={project.live}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg transition-colors duration-200 self-start"
-          style={{ background: `${project.accent}18`, color: project.accent, border: `1px solid ${project.accent}30` }}
-        >
-          <ArrowUpRight size={12} />
-          {t('projects.visitLive')}
-        </a>
-      )}
     </div>
   )
 
@@ -763,11 +769,24 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
           <ProjectIcon project={project} size={20} />
         </div>
 
-        {/* Title + badge */}
+        {/* Title + badge + live icon */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <h3 className="text-base md:text-lg font-semibold text-zinc-400 group-hover:text-white transition-colors duration-300 truncate">
             {project.title}
           </h3>
+          {(project.url || project.live) && (
+            <a
+              href={project.url || project.live}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={e => e.stopPropagation()}
+              className="shrink-0 opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity duration-200"
+              style={{ color: project.accent }}
+              title={project.url || project.live}
+            >
+              <ArrowUpRight size={14} />
+            </a>
+          )}
           {project.featured && (
             <span
               className="hidden sm:inline-flex shrink-0 items-center px-2 py-0.5 rounded-full text-[9px] font-mono tracking-widest border uppercase"
@@ -875,20 +894,6 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
                 ))}
               </div>
 
-              {/* Live link */}
-              {(project.url || project.live) && (
-                <a
-                  href={project.url || project.live}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg transition-colors duration-200"
-                  style={{ background: `${project.accent}18`, color: project.accent, border: `1px solid ${project.accent}30` }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <ExternalLink size={12} />
-                  {t('projects.visitLive')}
-                </a>
-              )}
             </div>
           </motion.div>
         )}
