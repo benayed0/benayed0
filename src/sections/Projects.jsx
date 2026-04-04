@@ -382,7 +382,7 @@ export default function Projects() {
       {/* Floating preview — portal, only on pointer devices */}
       {isPointerDevice && (
         <ProjectCursorElements
-          active={modal.active}
+          active={modal.active && expandedIndex !== modal.index}
           activeIndex={modal.index}
           t={t}
         />
