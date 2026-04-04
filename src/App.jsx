@@ -1,6 +1,5 @@
 import { LanguageProvider } from './context/LanguageContext'
 import { CursorProvider } from './context/CursorContext'
-import CustomCursor from './components/CustomCursor'
 import Navigation from './components/Navigation'
 import Hero from './sections/Hero'
 import About from './sections/About'
@@ -20,8 +19,7 @@ export default function App() {
   return (
     <LanguageProvider>
     <CursorProvider>
-      <CustomCursor />
-      <div className="noise-overlay">
+<div className="noise-overlay">
         <Navigation />
         <main>
           <Hero />

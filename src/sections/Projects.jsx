@@ -212,7 +212,7 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
       variants={itemVariants}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      className="group relative border-b border-white/[0.05] last:border-0 cursor-none"
+      className="group relative border-b border-white/[0.05] last:border-0"
     >
       {/* Hover/active bg wash */}
       <div
@@ -305,7 +305,7 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
                   href={project.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg transition-colors duration-200 cursor-none"
+                  className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg transition-colors duration-200"
                   style={{ background: `${project.accent}18`, color: project.accent, border: `1px solid ${project.accent}30` }}
                   onClick={(e) => e.stopPropagation()}
                 >
