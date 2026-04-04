@@ -300,9 +300,9 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
                 ))}
               </div>
               {/* Live link */}
-              {project.live && (
+              {(project.url || project.live) && (
                 <a
-                  href={project.live}
+                  href={project.url || project.live}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg transition-colors duration-200"

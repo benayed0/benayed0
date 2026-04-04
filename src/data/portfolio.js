@@ -19,11 +19,11 @@ export const stats = [
 export const projects = [
   {
     id: 1,
-    title: 'MyPubli Cloud',
+    title: 'MyPubli AI',
     tech: ['Angular', 'NestJS', 'Python', 'Yjs', 'OpenAI', 'OVH API', 'Grafana'],
-    live: null,
     featured: true,
     accent: '#7c3aed',
+    live:'https://mypubli.ai',
   },
   {
     id: 2,
@@ -37,9 +37,9 @@ export const projects = [
     id: 3,
     title: 'ParkUp',
     tech: ['Flutter', 'Dart', 'NestJS', 'TypeScript', 'Angular'],
-    live: null,
     featured: false,
     accent: '#059669',
+    live:'https://parkup-nine.vercel.app'
   },
   {
     id: 4,
@@ -53,9 +53,9 @@ export const projects = [
     id: 5,
     title: 'Landwash',
     tech: ['Flutter', 'Dart', 'NestJS', 'MongoDB', 'Firebase', 'WordPress'],
-    live: null,
     featured: false,
     accent: '#0e7490',
+    live:'https://landwash-app.vercel.app'
   },
   {
     id: 6,
@@ -85,9 +85,9 @@ export const projects = [
     id: 9,
     title: 'Christian Brinck',
     tech: ['TypeScript', 'NestJS', 'Python', 'Whisper', 'AWS S3'],
-    live: null,
     featured: false,
     accent: '#475569',
+    live:'https://christian-brinck-phd.com'
   },
   {
     id: 10,
@@ -109,17 +109,17 @@ export const projects = [
     id: 12,
     title: 'Factunorm',
     tech: ['TypeScript', 'NestJS'],
-    live: null,
     featured: false,
     accent: '#4f46e5',
+    live:'https://factunorm.pages.dev'
   },
   {
     id: 13,
     title: 'Cashflow',
     tech: ['TypeScript', 'NestJS', 'Angular'],
-    live: null,
     featured: false,
     accent: '#15803d',
+    live:'http://cashflow-web-amber.vercel.app/'
   },
   {
     id: 14,
