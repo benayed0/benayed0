@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useTransform, AnimatePresence } from 'framer-motion'
 import { ExternalLink, ArrowUpRight, ChevronDown, X, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react'
 import SectionWrapper, {
   SectionLabel,
@@ -307,177 +307,236 @@ function ScreenshotLightbox({ srcs, startIndex, accent, onClose }) {
   )
 }
 
-// ─── Interactive card-deck stack ─────────────────────────────────────────────
+// ─── 3D Perspective Browser Showcase ─────────────────────────────────────────
 //
-// Cards sit like physical photos on a desk. The front card is crisp and fully
-// readable. Clicking it sends it behind the others with spring physics, revealing
-// the next screenshot. Hovering the front card lifts it slightly.
+// Full-width browser mockup with mouse-tracking 3D tilt, smooth slide
+// transitions, auto-advancing progress, and accent glow. Designed to make
+// screenshots readable at a glance — no fullscreen needed.
 //
-const DECK_SLOTS = [
-  // front — upright, full opacity, sharp
-  { rotate: -1.5, x: 18, y: 32, scale: 1,    opacity: 1,    z: 30, blur: 0   },
-  // middle — leaning right, peeking behind
-  { rotate:  6,   x: 42, y: 14, scale: 0.93, opacity: 0.65, z: 20, blur: 0   },
-  // back — leaning left, barely visible
-  { rotate: -8,   x:  0, y:  6, scale: 0.86, opacity: 0.38, z: 10, blur: 0.5 },
-]
-
-function ScreenshotCarousel({ screenshots, accent }) {
+function ScreenshotShowcase({ screenshots, accent, url }) {
   const [active, setActive] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
+  const paused = useRef(false)
+  const containerRef = useRef(null)
   const srcs = screenshots.slice(0, 3)
   const count = srcs.length
 
-  const advance = useCallback(() => {
-    setActive(c => (c + 1) % count)
-  }, [count])
+  // Auto-advance with progress tracking
+  const [progress, setProgress] = useState(0)
+  const advance = useCallback(() => setActive(c => (c + 1) % count), [count])
 
-  // Auto-advance every 4 s (pauses while hovered)
-  const paused = useRef(false)
   useEffect(() => {
     if (count <= 1) return
-    const id = setInterval(() => { if (!paused.current) advance() }, 4000)
-    return () => clearInterval(id)
-  }, [count, advance])
+    let start = Date.now()
+    const DURATION = 4500
 
-  const CARD_W = 288
-  const CARD_H = 180   // 16:10
-  // Container must accommodate all offsets comfortably
-  const CTR_W  = CARD_W + 56
-  const CTR_H  = CARD_H + 48
+    const tick = () => {
+      if (!paused.current) {
+        const elapsed = Date.now() - start
+        const pct = Math.min(elapsed / DURATION, 1)
+        setProgress(pct)
+        if (pct >= 1) {
+          advance()
+          start = Date.now()
+          setProgress(0)
+        }
+      } else {
+        start = Date.now() - progress * DURATION // freeze progress
+      }
+      frame = requestAnimationFrame(tick)
+    }
+    let frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [count, advance, active]) // reset on manual navigation
+
+  // 3D tilt — mouse-tracking with springs
+  const mx = useMotionValue(0.5)
+  const my = useMotionValue(0.5)
+  const rotateX = useTransform(my, [0, 1], [3, -3])
+  const rotateY = useTransform(mx, [0, 1], [-3, 3])
+  const springRX = useSpring(rotateX, { stiffness: 120, damping: 20 })
+  const springRY = useSpring(rotateY, { stiffness: 120, damping: 20 })
+
+  const onMouseMove = (e) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    mx.set((e.clientX - rect.left) / rect.width)
+    my.set((e.clientY - rect.top) / rect.height)
+  }
+  const onMouseLeave = () => { mx.set(0.5); my.set(0.5); paused.current = false }
+  const onMouseEnter = () => { paused.current = true }
+
+  const displayUrl = (() => {
+    try { return new URL(url).hostname } catch { return 'preview' }
+  })()
+
+  const goTo = (i) => { setActive(i); setProgress(0) }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 14 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-      {/* ── Deck area ── */}
+      {/* ── Perspective wrapper ── */}
       <div
-        style={{ position: 'relative', width: CTR_W, height: CTR_H, cursor: count > 1 ? 'pointer' : 'default' }}
-        onClick={advance}
-        onMouseEnter={() => { paused.current = true }}
-        onMouseLeave={() => { paused.current = false }}
+        ref={containerRef}
+        onMouseMove={onMouseMove}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        style={{ perspective: 1200 }}
       >
-        {srcs.map((src, i) => {
-          const si    = (i - active + count) % count          // slot index
-          const slot  = DECK_SLOTS[Math.min(si, DECK_SLOTS.length - 1)]
-          const front = si === 0
-
-          return (
-            <motion.div
-              key={src}
-              animate={{
-                rotate:  slot.rotate,
-                x:       slot.x,
-                y:       slot.y,
-                scale:   slot.scale,
-                opacity: slot.opacity,
-                filter:  `blur(${slot.blur}px)`,
-                zIndex:  slot.z,
-              }}
-              transition={{ type: 'spring', stiffness: 280, damping: 28, mass: 0.9 }}
-              whileHover={front ? { y: slot.y - 8, transition: { type: 'spring', stiffness: 400, damping: 30 } } : {}}
+        <motion.div
+          style={{
+            rotateX: springRX,
+            rotateY: springRY,
+            transformStyle: 'preserve-3d',
+            borderRadius: 14,
+            overflow: 'hidden',
+            border: `1px solid ${accent}30`,
+            boxShadow: `0 30px 80px rgba(0,0,0,0.65), 0 0 50px ${accent}10, 0 0 0 1px rgba(255,255,255,0.04)`,
+            background: '#111',
+            willChange: 'transform',
+          }}
+        >
+          {/* ── Browser chrome ── */}
+          <div style={{
+            height: 40,
+            background: 'linear-gradient(180deg, #1e1e1e 0%, #191919 100%)',
+            borderBottom: '1px solid rgba(255,255,255,0.06)',
+            display: 'flex', alignItems: 'center',
+            padding: '0 14px', gap: 10,
+            userSelect: 'none',
+          }}>
+            {/* Traffic lights */}
+            <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#ff5f57' }} />
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#febc2e' }} />
+              <div style={{ width: 11, height: 11, borderRadius: '50%', background: '#28c840' }} />
+            </div>
+            {/* URL bar */}
+            <div style={{
+              flex: 1, height: 24, borderRadius: 6,
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.04)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              gap: 5, fontSize: 11, color: '#555', fontFamily: 'monospace',
+            }}>
+              <span style={{ fontSize: 9, opacity: 0.6 }}>🔒</span>
+              {displayUrl}
+            </div>
+            {/* Expand to fullscreen */}
+            <button
+              onClick={() => setLightboxOpen(true)}
               style={{
-                position:     'absolute',
-                width:        CARD_W,
-                height:       CARD_H,
-                borderRadius: 11,
-                overflow:     'hidden',
-                boxShadow:    front
-                  ? `0 22px 56px rgba(0,0,0,0.85), 0 0 0 1.5px ${accent}55`
-                  : `0 8px 24px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06)`,
-                willChange:   'transform',
+                width: 26, height: 26, borderRadius: 6, flexShrink: 0,
+                background: 'transparent',
+                border: '1px solid rgba(255,255,255,0.08)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', color: 'rgba(255,255,255,0.35)',
+                transition: 'all 0.15s',
               }}
+              onMouseEnter={e => { e.currentTarget.style.background = `${accent}30`; e.currentTarget.style.color = '#fff' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'rgba(255,255,255,0.35)' }}
+              title="View fullscreen"
             >
-              <img
-                src={import.meta.env.BASE_URL.replace(/\/$/, '') + src}
+              <Maximize2 size={11} />
+            </button>
+          </div>
+
+          {/* ── Screenshot viewport ── */}
+          <div style={{ position: 'relative', width: '100%', aspectRatio: '16 / 9.5', overflow: 'hidden' }}>
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={active}
+                src={import.meta.env.BASE_URL.replace(/\/$/, '') + srcs[active]}
                 alt=""
                 draggable={false}
+                initial={{ opacity: 0, x: 50, scale: 1.02 }}
+                animate={{ opacity: 1, x: 0, scale: 1 }}
+                exit={{ opacity: 0, x: -50, scale: 0.98 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                 style={{
+                  position: 'absolute', inset: 0,
                   width: '100%', height: '100%',
                   objectFit: 'cover', objectPosition: 'top',
-                  display: 'block', userSelect: 'none', pointerEvents: 'none',
+                  display: 'block', userSelect: 'none',
                 }}
               />
+            </AnimatePresence>
 
-              {/* Accent-tinted gradient on front card only */}
-              {front && (
-                <div style={{
-                  position: 'absolute', inset: 0, pointerEvents: 'none',
-                  background: `linear-gradient(155deg, transparent 60%, ${accent}22 100%)`,
-                }} />
-              )}
-
-              {/* Expand / fullscreen button — top-right of front card */}
-              {front && (
+            {/* Navigation arrows — visible on hover */}
+            {count > 1 && (
+              <>
                 <button
-                  onClick={e => { e.stopPropagation(); setLightboxOpen(true) }}
+                  onClick={() => goTo((active - 1 + count) % count)}
+                  className="opacity-0 group-hover/showcase:opacity-100 transition-opacity duration-200"
                   style={{
-                    position: 'absolute', top: 8, right: 8,
-                    width: 28, height: 28, borderRadius: 7,
-                    background: 'rgba(0,0,0,0.6)',
-                    border: '1px solid rgba(255,255,255,0.12)',
+                    position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', zIndex: 2,
+                    width: 34, height: 34, borderRadius: '50%',
+                    background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.12)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    cursor: 'pointer', color: 'rgba(255,255,255,0.6)',
-                    backdropFilter: 'blur(6px)',
-                    transition: 'background 0.15s, color 0.15s',
-                    zIndex: 5,
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = `${accent}55`; e.currentTarget.style.color = '#fff' }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)' }}
-                  title="View fullscreen"
-                >
-                  <Maximize2 size={11} />
-                </button>
-              )}
-
-              {/* "click to reveal" badge — only on front card, pulsing */}
-              {front && count > 1 && (
-                <motion.div
-                  animate={{ opacity: [0.45, 0.85, 0.45] }}
-                  transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{
-                    position:       'absolute',
-                    bottom:         10,
-                    right:          10,
-                    display:        'flex',
-                    alignItems:     'center',
-                    gap:            4,
-                    padding:        '3px 9px',
-                    borderRadius:   20,
-                    background:     'rgba(0,0,0,0.68)',
-                    border:         '1px solid rgba(255,255,255,0.1)',
+                    cursor: 'pointer', color: 'rgba(255,255,255,0.7)',
                     backdropFilter: 'blur(8px)',
-                    pointerEvents:  'none',
                   }}
                 >
-                  <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace', letterSpacing: '0.06em' }}>
-                    click to reveal
-                  </span>
-                  <span style={{ fontSize: 11, color: accent, lineHeight: 1 }}>›</span>
-                </motion.div>
-              )}
-            </motion.div>
-          )
-        })}
+                  <ChevronLeft size={15} />
+                </button>
+                <button
+                  onClick={() => goTo((active + 1) % count)}
+                  className="opacity-0 group-hover/showcase:opacity-100 transition-opacity duration-200"
+                  style={{
+                    position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', zIndex: 2,
+                    width: 34, height: 34, borderRadius: '50%',
+                    background: 'rgba(0,0,0,0.6)', border: '1px solid rgba(255,255,255,0.12)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: 'rgba(255,255,255,0.7)',
+                    backdropFilter: 'blur(8px)',
+                  }}
+                >
+                  <ChevronRight size={15} />
+                </button>
+              </>
+            )}
+          </div>
+        </motion.div>
       </div>
 
-      {/* ── Dot indicators ── */}
+      {/* ── Progress dots ── */}
       {count > 1 && (
-        <div style={{ display: 'flex', gap: 6, paddingLeft: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 8 }}>
           {srcs.map((_, i) => (
             <button
               key={i}
-              onClick={(e) => { e.stopPropagation(); setActive(i) }}
+              onClick={() => goTo(i)}
               style={{
-                width:      i === active ? 20 : 6,
-                height:     6,
-                borderRadius: 3,
-                background: i === active ? accent : 'rgba(255,255,255,0.15)',
-                border:     'none',
-                cursor:     'pointer',
-                padding:    0,
-                transition: 'all 0.3s ease',
+                position: 'relative',
+                width: i === active ? 28 : 8,
+                height: 8,
+                borderRadius: 4,
+                background: i === active ? 'transparent' : 'rgba(255,255,255,0.12)',
+                border: 'none', cursor: 'pointer', padding: 0,
+                transition: 'width 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                overflow: 'hidden',
               }}
-            />
+            >
+              {/* Track */}
+              {i === active && (
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  borderRadius: 4,
+                  background: `${accent}40`,
+                }} />
+              )}
+              {/* Fill — animated by progress */}
+              {i === active && (
+                <motion.div
+                  style={{
+                    position: 'absolute', top: 0, left: 0, bottom: 0,
+                    borderRadius: 4,
+                    background: accent,
+                    width: `${progress * 100}%`,
+                  }}
+                />
+              )}
+            </button>
           ))}
         </div>
       )}
@@ -620,14 +679,14 @@ function FeaturedProjectCard({ project, index, t, isHero }) {
         boxShadow: `0 0 40px ${project.accent}25, 0 8px 40px rgba(0,0,0,0.5)`,
         transition: { duration: 0.25, ease: 'easeOut' },
       }}
-      className={hasScreenshots ? 'flex flex-col lg:flex-row lg:items-center lg:gap-8' : 'flex flex-col'}
+      className="flex flex-col"
       style={{
         position: 'relative',
         background: `linear-gradient(135deg, #0f0f0f 0%, ${project.accent}16 100%)`,
         border: `1px solid ${project.accent}28`,
         borderRadius: 20,
         padding: isHero ? '28px' : '24px',
-        gap: hasScreenshots ? undefined : 14,
+        gap: 14,
         height: '100%',
         boxSizing: 'border-box',
       }}
@@ -651,8 +710,8 @@ function FeaturedProjectCard({ project, index, t, isHero }) {
       {textContent}
 
       {hasScreenshots && (
-        <div className="flex justify-center lg:justify-end lg:flex-shrink-0 mt-4 lg:mt-0 overflow-hidden">
-          <ScreenshotCarousel screenshots={project.screenshots} accent={project.accent} />
+        <div className="group/showcase w-full mt-2">
+          <ScreenshotShowcase screenshots={project.screenshots} accent={project.accent} url={project.live} />
         </div>
       )}
     </motion.div>
