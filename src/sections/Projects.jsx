@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
-import { ExternalLink, ArrowUpRight } from 'lucide-react'
+import { ExternalLink, ArrowUpRight, ChevronDown, X } from 'lucide-react'
 import SectionWrapper, {
   SectionLabel,
   SectionHeading,
@@ -204,7 +204,9 @@ function ProjectCursorElements({ active, activeIndex, t }) {
 }
 
 // ─── Single project row ────────────────────────────────────────────────────────
-function ProjectRow({ project, index, onEnter, onLeave }) {
+function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle }) {
+  const description = t(`projects.items.${project.id}.description`)
+
   return (
     <motion.div
       variants={itemVariants}
@@ -212,24 +214,28 @@ function ProjectRow({ project, index, onEnter, onLeave }) {
       onMouseLeave={onLeave}
       className="group relative border-b border-white/[0.05] last:border-0 cursor-none"
     >
-      {/* Hover bg wash from left */}
+      {/* Hover/active bg wash */}
       <div
         className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
         style={{ background: `linear-gradient(90deg, ${project.accent}10 0%, transparent 70%)` }}
       />
       {/* Left accent bar */}
-      <motion.div
+      <div
         className="absolute left-0 top-2 bottom-2 w-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{ background: project.accent }}
       />
 
-      <div className="relative flex items-center gap-5 md:gap-8 py-4 md:py-5 px-5 md:px-6">
+      {/* Clickable header row */}
+      <div
+        className="relative flex items-center gap-5 md:gap-8 py-4 md:py-5 px-5 md:px-6 select-none"
+        onClick={onToggle}
+      >
         {/* Index */}
-        <span className="text-xs font-mono text-zinc-700 group-hover:text-zinc-500 transition-colors duration-300 w-5 shrink-0 tabular-nums select-none">
+        <span className="text-xs font-mono text-zinc-700 group-hover:text-zinc-500 transition-colors duration-300 w-5 shrink-0 tabular-nums">
           {String(index + 1).padStart(2, '0')}
         </span>
 
-        {/* Title + featured badge */}
+        {/* Title + badge */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <h3 className="text-base md:text-lg font-semibold text-zinc-400 group-hover:text-white transition-colors duration-300 truncate">
             {project.title}
@@ -244,7 +250,7 @@ function ProjectRow({ project, index, onEnter, onLeave }) {
           )}
         </div>
 
-        {/* Tech stack — desktop only */}
+        {/* Tech stack — desktop */}
         <div className="hidden lg:flex items-center gap-4 shrink-0">
           {project.tech.slice(0, 3).map((tech) => (
             <span key={tech} className="text-xs font-mono text-zinc-600 group-hover:text-zinc-400 transition-colors duration-300">
@@ -256,19 +262,61 @@ function ProjectRow({ project, index, onEnter, onLeave }) {
           )}
         </div>
 
-        {/* Arrow / link */}
-        <div className="shrink-0 transition-all duration-300 group-hover:translate-x-1">
-          {project.live ? (
-            <a href={project.live} target="_blank" rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="text-zinc-700 group-hover:text-zinc-300 transition-colors block cursor-none">
-              <ExternalLink size={14} />
-            </a>
-          ) : (
-            <ArrowUpRight size={14} className="text-zinc-700 group-hover:text-zinc-400 transition-colors duration-300" />
-          )}
-        </div>
+        {/* Expand chevron */}
+        <motion.div
+          animate={{ rotate: isExpanded ? 180 : 0 }}
+          transition={{ duration: 0.25, ease: 'easeOut' }}
+          className="shrink-0 text-zinc-600 group-hover:text-zinc-400 transition-colors duration-300"
+        >
+          <ChevronDown size={15} />
+        </motion.div>
       </div>
+
+      {/* Expandable description */}
+      <AnimatePresence initial={false}>
+        {isExpanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            style={{ overflow: 'hidden' }}
+          >
+            <div className="px-5 md:px-6 pb-5 ml-10 md:ml-14">
+              {/* Description */}
+              <p className="text-sm text-zinc-400 leading-relaxed mb-4 max-w-2xl">
+                {description}
+              </p>
+              {/* All tech tags */}
+              <div className="flex flex-wrap gap-2 mb-4">
+                {project.tech.map((tech) => (
+                  <span
+                    key={tech}
+                    className="text-[11px] font-mono px-2.5 py-1 rounded-md"
+                    style={{ background: `${project.accent}12`, color: `${project.accent}cc`, border: `1px solid ${project.accent}22` }}
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+              {/* Live link */}
+              {project.live && (
+                <a
+                  href={project.live}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg transition-colors duration-200 cursor-none"
+                  style={{ background: `${project.accent}18`, color: project.accent, border: `1px solid ${project.accent}30` }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ExternalLink size={12} />
+                  Visit live site
+                </a>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
@@ -278,6 +326,7 @@ export default function Projects() {
   const { t } = useLanguage()
   const { setCursor } = useCursor()
   const [modal, setModal] = useState({ active: false, index: 0 })
+  const [expandedIndex, setExpandedIndex] = useState(null)
   const [isPointerDevice, setIsPointerDevice] = useState(false)
 
   useEffect(() => {
@@ -293,6 +342,10 @@ export default function Projects() {
     setModal({ active: false, index: i })
     setCursor({ text: '', type: 'default' })
   }, [setCursor])
+
+  const handleToggle = useCallback((i) => {
+    setExpandedIndex((prev) => (prev === i ? null : i))
+  }, [])
 
   return (
     <>
@@ -316,8 +369,11 @@ export default function Projects() {
               key={project.id}
               project={project}
               index={i}
+              t={t}
               onEnter={() => handleEnter(i)}
               onLeave={() => handleLeave(i)}
+              isExpanded={expandedIndex === i}
+              onToggle={() => handleToggle(i)}
             />
           ))}
         </motion.div>
