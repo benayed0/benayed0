@@ -2,6 +2,7 @@ import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowRight, Linkedin, Mail, ChevronDown, Globe, Download } from 'lucide-react'
 import { personal, experience, skills, projects } from '../data/portfolio'
 import { useLanguage } from '../context/LanguageContext'
+import { translations } from '../i18n/translations'
 import { pdf } from '@react-pdf/renderer'
 import CVDocument from '../components/CVDocument'
 
@@ -78,14 +79,14 @@ const TAGS = [
 ]
 
 export default function Hero() {
-  const { t } = useLanguage()
+  const { lang, t } = useLanguage()
 
   const handleDownloadCV = async () => {
-    const blob = await pdf(<CVDocument />).toBlob()
+    const blob = await pdf(<CVDocument lang={lang} tr={translations[lang]} />).toBlob()
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'Aziz_Ben_Ayed_CV.pdf'
+    a.download = lang === 'fr' ? 'Aziz_Ben_Ayed_CV_FR.pdf' : 'Aziz_Ben_Ayed_CV.pdf'
     a.click()
     URL.revokeObjectURL(url)
   }

@@ -1,6 +1,11 @@
 import { Document, Page, Text, View, Link, StyleSheet } from '@react-pdf/renderer'
 import { personal, experience, skills, projects } from '../data/portfolio'
 
+const LABELS = {
+  en: { summary: 'Summary', experience: 'Experience', skills: 'Skills', projects: 'Projects', shipped: 'shipped', remote: 'Remote' },
+  fr: { summary: 'Résumé', experience: 'Expérience', skills: 'Compétences', projects: 'Projets', shipped: 'livrés', remote: 'Remote' },
+}
+
 const palette = {
   bg:     '#0f0f13',
   accent: '#7c3aed',
@@ -73,7 +78,11 @@ const s = StyleSheet.create({
   projTagline:{ fontSize: 7.5, color: palette.muted, lineHeight: 1.45 },
 })
 
-export default function CVDocument() {
+export default function CVDocument({ lang = 'en', tr }) {
+  const L = LABELS[lang] || LABELS.en
+  const expItems = tr?.experience?.items || []
+  const skillCategories = tr?.skills?.categories || {}
+
   return (
     <Document title={`${personal.name} — CV`} author={personal.name}>
       <Page size="A4" style={s.page}>
@@ -87,41 +96,44 @@ export default function CVDocument() {
           <View style={s.headerRight}>
             <Text style={s.metaItem}>{personal.email}</Text>
             <Link src={personal.linkedin} style={s.metaLink}>linkedin.com/in/mohamed-aziz-ben-ayed</Link>
-            <Text style={s.metaItem}>{personal.locations.map(l => l.name).join(' · ')}  ·  Remote</Text>
+            <Text style={s.metaItem}>{personal.locations.map(l => l.name).join(' · ')}  ·  {L.remote}</Text>
           </View>
         </View>
         <View style={s.divider} />
 
         {/* ── Summary ── */}
         <View style={s.section}>
-          <Text style={s.sectionHead}>Summary</Text>
-          <Text style={s.summaryText}>{personal.bio}</Text>
+          <Text style={s.sectionHead}>{L.summary}</Text>
+          <Text style={s.summaryText}>{tr?.hero?.bio || personal.bio}</Text>
         </View>
 
         {/* ── Experience ── */}
         <View style={s.section}>
-          <Text style={s.sectionHead}>Experience</Text>
-          {experience.map((exp, i) => (
-            <View key={i} style={s.expEntry}>
-              <View style={s.expHeader}>
-                <Text style={s.expRole}>{exp.role}</Text>
-                <Text style={s.expPeriod}>{exp.period}</Text>
+          <Text style={s.sectionHead}>{L.experience}</Text>
+          {experience.map((exp, i) => {
+            const trExp = expItems[i] || {}
+            return (
+              <View key={i} style={s.expEntry}>
+                <View style={s.expHeader}>
+                  <Text style={s.expRole}>{trExp.role || exp.role}</Text>
+                  <Text style={s.expPeriod}>{exp.period}</Text>
+                </View>
+                <Text style={s.expCompany}>{exp.company}</Text>
+                <Text style={s.expDesc}>{trExp.description || exp.description}</Text>
+                <View style={s.chipsRow}>
+                  {(trExp.highlights || exp.highlights).map((h, j) => <Text key={j} style={s.chip}>{h}</Text>)}
+                </View>
               </View>
-              <Text style={s.expCompany}>{exp.company}</Text>
-              <Text style={s.expDesc}>{exp.description}</Text>
-              <View style={s.chipsRow}>
-                {exp.highlights.map((h, j) => <Text key={j} style={s.chip}>{h}</Text>)}
-              </View>
-            </View>
-          ))}
+            )
+          })}
         </View>
 
         {/* ── Skills (one row per category) ── */}
         <View style={s.section}>
-          <Text style={s.sectionHead}>Skills</Text>
+          <Text style={s.sectionHead}>{L.skills}</Text>
           {skills.map((cat, i) => (
             <View key={i} style={s.skillRow}>
-              <Text style={s.skillCat}>{cat.category}</Text>
+              <Text style={s.skillCat}>{skillCategories[cat.category] || cat.category}</Text>
               <Text style={s.skillItems}>{cat.items.join('  ·  ')}</Text>
             </View>
           ))}
@@ -129,17 +141,20 @@ export default function CVDocument() {
 
         {/* ── Projects ── */}
         <View style={s.section}>
-          <Text style={s.sectionHead}>Projects  ·  {projects.length} shipped</Text>
+          <Text style={s.sectionHead}>{L.projects}  ·  {projects.length} {L.shipped}</Text>
           <View style={s.projGrid}>
-            {projects.map((proj, i) => (
-              <View key={i} style={s.projCard}>
-                {proj.live
-                  ? <Link src={proj.live} style={s.projTitleLink}>{proj.title}</Link>
-                  : <Text style={s.projTitle}>{proj.title}</Text>
-                }
-                <Text style={s.projTagline}>{proj.tagline}</Text>
-              </View>
-            ))}
+            {projects.map((proj, i) => {
+              const trProj = tr?.projects?.items?.[proj.id] || {}
+              return (
+                <View key={i} style={s.projCard}>
+                  {proj.live
+                    ? <Link src={proj.live} style={s.projTitleLink}>{proj.title}</Link>
+                    : <Text style={s.projTitle}>{proj.title}</Text>
+                  }
+                  <Text style={s.projTagline}>{trProj.tagline || proj.tagline}</Text>
+                </View>
+              )
+            })}
           </View>
         </View>
 

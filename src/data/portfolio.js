@@ -29,7 +29,32 @@ export const projects = [
     tech: ['Angular', 'NestJS', 'Python', 'Yjs', 'OpenAI', 'OVH API', 'Grafana'],
     featured: true,
     accent: '#7c3aed',
-    live:'https://mypubli.ai',
+    live: 'https://mypubli.ai',
+    screenshots: [
+      '/screenshots/mypubli-2.png',
+      '/screenshots/mypubli-3.png',
+      '/screenshots/mypubli.png',
+    ],
+  },
+  {
+    id: 3,
+    title: 'ParkUp',
+    tagline: 'Four apps. One platform. Real-time enforcement, thermal printing, and geospatial parking.',
+    favicon: '/favicons/parkup.png',
+    tech: ['Flutter', 'Angular', 'NestJS', 'Socket.IO', 'Mapbox', 'MongoDB'],
+    featured: true,
+    accent: '#059669',
+    live:'https://parkup-nine.vercel.app'
+  },
+  {
+    id: 6,
+    title: 'Phonix',
+    tagline: '5 years. One platform. Therapists, parents, kids, and doctors — united.',
+    favicon: '/favicons/phonix.png',
+    tech: ['TypeScript', 'NestJS', 'Angular', 'AWS', 'Firebase', 'GPU'],
+    live: 'https://phonixhealth.com',
+    featured: true,
+    accent: '#8b5cf6',
   },
   {
     id: 2,
@@ -40,16 +65,6 @@ export const projects = [
     live: null,
     featured: false,
     accent: '#0891b2',
-  },
-  {
-    id: 3,
-    title: 'ParkUp',
-    tagline: 'From parking spot to payment — end-to-end in one platform.',
-    favicon: '/favicons/parkup.png',
-    tech: ['Flutter', 'Dart', 'NestJS', 'TypeScript', 'Angular'],
-    featured: false,
-    accent: '#059669',
-    live:'https://parkup-nine.vercel.app'
   },
   {
     id: 4,
@@ -70,16 +85,6 @@ export const projects = [
     featured: false,
     accent: '#0e7490',
     live:'https://landwash-app.vercel.app'
-  },
-  {
-    id: 6,
-    title: 'Phonix',
-    tagline: '5 years. One platform. Therapists, parents, kids, and doctors — united.',
-    favicon: '/favicons/phonix.png',
-    tech: ['TypeScript', 'NestJS', 'Angular'],
-    live: 'https://phonixhealth.com',
-    featured: false,
-    accent: '#7c3aed',
   },
   {
     id: 7,

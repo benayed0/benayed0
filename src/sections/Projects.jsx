@@ -135,9 +135,218 @@ function ProjectCursorElements({ active, activeIndex, t }) {
   )
 }
 
+// ─── Stacked screenshots ─────────────────────────────────────────────────────
+function StackedScreenshots({ screenshots, accent }) {
+  const layers = [
+    { rotate: -6,   x: -28, y: 20,  z: 1, opacity: 0.5  },
+    { rotate: 4,    x: 20,  y: -14, z: 2, opacity: 0.72 },
+    { rotate: -1.5, x: -4,  y: -2,  z: 3, opacity: 1    },
+  ]
+  return (
+    <div style={{ position: 'relative', width: 360, height: 240, flexShrink: 0 }}>
+      {screenshots.slice(0, 3).map((src, i) => (
+        <motion.img
+          key={src}
+          src={import.meta.env.BASE_URL.replace(/\/$/, '') + src}
+          alt=""
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: layers[i].opacity, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.15 * (3 - i), ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            position: 'absolute',
+            width: 310,
+            height: 194,
+            objectFit: 'cover',
+            objectPosition: 'top',
+            borderRadius: 10,
+            rotate: layers[i].rotate,
+            x: layers[i].x,
+            y: layers[i].y,
+            zIndex: layers[i].z,
+            boxShadow: `0 16px 48px rgba(0,0,0,0.75), 0 0 0 1px ${accent}40`,
+            userSelect: 'none',
+            pointerEvents: 'none',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+// ─── Featured showcase card ───────────────────────────────────────────────────
+function FeaturedProjectCard({ project, index, t, isHero }) {
+  const [showTechnical, setShowTechnical] = useState(false)
+  const snippet   = t(`projects.items.${project.id}.snippet`)
+  const technical = t(`projects.items.${project.id}.technical`)
+  const techToShow = isHero ? project.tech : project.tech.slice(0, 4)
+  const techOverflow = isHero ? 0 : project.tech.length - 4
+
+  const hasScreenshots = isHero && project.screenshots?.length > 0
+
+  const textContent = (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: 1, minWidth: 0 }}>
+      {/* Header row */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+        <ProjectIcon project={project} size={isHero ? 48 : 40} />
+        <span style={{
+          color: project.accent,
+          background: `${project.accent}18`,
+          border: `1px solid ${project.accent}35`,
+          padding: '3px 10px',
+          borderRadius: 999,
+          fontSize: 10,
+          fontFamily: 'monospace',
+          fontWeight: 700,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          flexShrink: 0,
+        }}>
+          Featured
+        </span>
+      </div>
+
+      {/* Title */}
+      <div>
+        <h3 style={{ fontSize: isHero ? 22 : 18, fontWeight: 700, color: '#e4e4e7', lineHeight: 1.2, marginBottom: 6 }}>
+          {project.title}
+        </h3>
+        <p style={{ fontSize: 13, color: '#71717a', lineHeight: 1.5 }}>
+          {t(`projects.items.${project.id}.tagline`)}
+        </p>
+      </div>
+
+      {/* Snippet */}
+      <p style={{ fontSize: 13.5, color: '#a1a1aa', lineHeight: 1.65, flex: 1 }}>
+        {snippet}
+      </p>
+
+      {/* Technical toggle */}
+      <div>
+        <button
+          onClick={() => setShowTechnical(v => !v)}
+          className="inline-flex items-center gap-1.5 text-[11px] font-mono mb-3 transition-colors duration-200"
+          style={{ color: showTechnical ? project.accent : '#52525b' }}
+        >
+          <span style={{
+            fontFamily: 'monospace',
+            fontSize: 10,
+            padding: '1px 5px',
+            borderRadius: 4,
+            border: `1px solid ${showTechnical ? project.accent + '60' : '#3f3f46'}`,
+            background: showTechnical ? `${project.accent}12` : 'transparent',
+            transition: 'all 0.2s',
+          }}>
+            {'</>'}
+          </span>
+          {t('projects.technicalDetails')}
+        </button>
+
+        <AnimatePresence initial={false}>
+          {showTechnical && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              style={{ overflow: 'hidden' }}
+            >
+              <p style={{ color: '#71717a', borderLeft: `2px solid ${project.accent}40`, paddingLeft: 12, fontSize: 12.5, lineHeight: 1.7, marginBottom: 12 }}>
+                {technical}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Tech chips */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        {techToShow.map(tech => (
+          <span key={tech} style={{ fontSize: 11, fontFamily: 'monospace', padding: '3px 9px', borderRadius: 6, background: `${project.accent}12`, color: `${project.accent}cc`, border: `1px solid ${project.accent}22` }}>
+            {tech}
+          </span>
+        ))}
+        {techOverflow > 0 && (
+          <span style={{ fontSize: 11, fontFamily: 'monospace', padding: '3px 9px', borderRadius: 6, color: '#52525b' }}>
+            +{techOverflow}
+          </span>
+        )}
+      </div>
+
+      {/* Live link */}
+      {project.live && (
+        <a
+          href={project.live}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-xs font-medium px-4 py-2 rounded-lg transition-colors duration-200 self-start"
+          style={{ background: `${project.accent}18`, color: project.accent, border: `1px solid ${project.accent}30` }}
+        >
+          <ArrowUpRight size={12} />
+          {t('projects.visitLive')}
+        </a>
+      )}
+    </div>
+  )
+
+  return (
+    <motion.div
+      variants={itemVariants}
+      whileHover={{
+        y: -4,
+        boxShadow: `0 0 40px ${project.accent}25, 0 8px 40px rgba(0,0,0,0.5)`,
+        transition: { duration: 0.25, ease: 'easeOut' },
+      }}
+      className={hasScreenshots ? 'flex flex-col lg:flex-row lg:items-center lg:gap-8' : 'flex flex-col'}
+      style={{
+        position: 'relative',
+        background: `linear-gradient(135deg, #0f0f0f 0%, ${project.accent}16 100%)`,
+        border: `1px solid ${project.accent}28`,
+        borderRadius: 20,
+        padding: isHero ? '28px' : '24px',
+        gap: hasScreenshots ? undefined : 14,
+        height: '100%',
+        boxSizing: 'border-box',
+      }}
+    >
+      {/* Top accent bar */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.9, delay: 0.3 + index * 0.1, ease: 'easeOut' }}
+        style={{
+          transformOrigin: 'left',
+          background: `linear-gradient(90deg, ${project.accent}90, transparent)`,
+          position: 'absolute',
+          top: 0, left: 0, right: 0,
+          height: 2,
+          borderRadius: '20px 20px 0 0',
+        }}
+      />
+
+      {textContent}
+
+      {hasScreenshots && (
+        <div className="hidden lg:flex items-center justify-center">
+          <StackedScreenshots screenshots={project.screenshots} accent={project.accent} />
+        </div>
+      )}
+    </motion.div>
+  )
+}
+
 // ─── Single project row ────────────────────────────────────────────────────────
 function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle }) {
-  const description = t(`projects.items.${project.id}.description`)
+  const [showTechnical, setShowTechnical] = useState(false)
+  const snippet   = t(`projects.items.${project.id}.snippet`)
+  const technical = t(`projects.items.${project.id}.technical`)
+
+  // Reset technical view when row collapses
+  const handleToggle = () => {
+    if (isExpanded) setShowTechnical(false)
+    onToggle()
+  }
 
   return (
     <motion.div
@@ -160,7 +369,7 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
       {/* Clickable header row */}
       <div
         className="relative flex items-center gap-5 md:gap-8 py-4 md:py-5 px-5 md:px-6 select-none"
-        onClick={onToggle}
+        onClick={handleToggle}
       >
         {/* Index */}
         <span className="text-xs font-mono text-zinc-700 group-hover:text-zinc-500 transition-colors duration-300 w-5 shrink-0 tabular-nums">
@@ -209,7 +418,7 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
         </motion.div>
       </div>
 
-      {/* Expandable description */}
+      {/* Expandable body */}
       <AnimatePresence initial={false}>
         {isExpanded && (
           <motion.div
@@ -220,11 +429,58 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
             style={{ overflow: 'hidden' }}
           >
             <div className="px-5 md:px-6 pb-5 ml-10 md:ml-14">
-              {/* Description */}
-              <p className="text-sm text-zinc-400 leading-relaxed mb-4 max-w-2xl">
-                {description}
+
+              {/* Snippet — always visible */}
+              <p className="text-sm text-zinc-300 leading-relaxed mb-3 max-w-2xl">
+                {snippet}
               </p>
-              {/* All tech tags */}
+
+              {/* Technical toggle button */}
+              <button
+                onClick={(e) => { e.stopPropagation(); setShowTechnical((v) => !v) }}
+                className="inline-flex items-center gap-1.5 text-[11px] font-mono mb-4 transition-colors duration-200"
+                style={{ color: showTechnical ? project.accent : '#52525b' }}
+              >
+                <span style={{
+                  fontFamily: 'monospace',
+                  fontSize: 10,
+                  padding: '1px 5px',
+                  borderRadius: 4,
+                  border: `1px solid ${showTechnical ? project.accent + '60' : '#3f3f46'}`,
+                  background: showTechnical ? `${project.accent}12` : 'transparent',
+                  transition: 'all 0.2s',
+                }}>
+                  {'</>'}
+                </span>
+                {t('projects.technicalDetails')}
+              </button>
+
+              {/* Technical details — collapsible */}
+              <AnimatePresence initial={false}>
+                {showTechnical && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                    style={{ overflow: 'hidden' }}
+                  >
+                    <p
+                      className="text-sm leading-relaxed mb-4 max-w-2xl"
+                      style={{
+                        color: '#71717a',
+                        borderLeft: `2px solid ${project.accent}40`,
+                        paddingLeft: 12,
+                        marginBottom: 16,
+                      }}
+                    >
+                      {technical}
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Tech tags */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {project.tech.map((tech) => (
                   <span
@@ -236,6 +492,7 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
                   </span>
                 ))}
               </div>
+
               {/* Live link */}
               {(project.url || project.live) && (
                 <a
@@ -265,6 +522,9 @@ export default function Projects() {
   const [modal, setModal] = useState({ active: false, index: 0 })
   const [expandedIndex, setExpandedIndex] = useState(null)
   const [isPointerDevice, setIsPointerDevice] = useState(false)
+
+  const featuredProjects  = projects.filter(p => p.featured)
+  const remainingProjects = projects.filter(p => !p.featured)
 
   useEffect(() => {
     setIsPointerDevice(window.matchMedia('(hover: hover) and (pointer: fine)').matches)
@@ -296,19 +556,42 @@ export default function Projects() {
           </SectionHeading>
         </div>
 
+        {/* ── Featured showcase cards ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
+          <div className="md:col-span-2">
+            <FeaturedProjectCard project={featuredProjects[0]} index={0} t={t} isHero={true} />
+          </div>
+          {featuredProjects[1] && (
+            <FeaturedProjectCard project={featuredProjects[1]} index={1} t={t} isHero={false} />
+          )}
+          {featuredProjects[2] && (
+            <FeaturedProjectCard project={featuredProjects[2]} index={2} t={t} isHero={false} />
+          )}
+        </div>
+
+        {/* ── Divider ── */}
+        <motion.div variants={itemVariants} className="flex items-center gap-4 mb-6">
+          <div className="flex-1 h-px bg-white/[0.05]" />
+          <span className="text-xs font-mono text-zinc-600 tracking-widest uppercase">
+            {t('projects.moreProjects')}
+          </span>
+          <div className="flex-1 h-px bg-white/[0.05]" />
+        </motion.div>
+
+        {/* ── Remaining projects accordion ── */}
         <motion.div
           variants={itemVariants}
           style={{ border: '1px solid rgba(255,255,255,0.06)', background: '#0c0c0c', borderRadius: 20 }}
           className="overflow-hidden"
         >
-          {projects.map((project, i) => (
+          {remainingProjects.map((project, i) => (
             <ProjectRow
               key={project.id}
               project={project}
               index={i}
               t={t}
-              onEnter={() => handleEnter(i)}
-              onLeave={() => handleLeave(i)}
+              onEnter={() => handleEnter(i + featuredProjects.length)}
+              onLeave={() => handleLeave(i + featuredProjects.length)}
               isExpanded={expandedIndex === i}
               onToggle={() => handleToggle(i)}
             />
