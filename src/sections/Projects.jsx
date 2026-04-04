@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
-import { ExternalLink, ArrowUpRight, ChevronDown, X } from 'lucide-react'
+import { ExternalLink, ArrowUpRight, ChevronDown, X, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react'
 import SectionWrapper, {
   SectionLabel,
   SectionHeading,
@@ -135,41 +135,364 @@ function ProjectCursorElements({ active, activeIndex, t }) {
   )
 }
 
-// ─── Stacked screenshots ─────────────────────────────────────────────────────
-function StackedScreenshots({ screenshots, accent }) {
-  const layers = [
-    { rotate: -6,   x: -28, y: 20,  z: 1, opacity: 0.5  },
-    { rotate: 4,    x: 20,  y: -14, z: 2, opacity: 0.72 },
-    { rotate: -1.5, x: -4,  y: -2,  z: 3, opacity: 1    },
-  ]
+// ─── Fullscreen lightbox ──────────────────────────────────────────────────────
+function ScreenshotLightbox({ srcs, startIndex, accent, onClose }) {
+  const [idx, setIdx] = useState(startIndex)
+  const count = srcs.length
+
+  const prev = useCallback(() => setIdx(i => (i - 1 + count) % count), [count])
+  const next = useCallback(() => setIdx(i => (i + 1) % count), [count])
+
+  // Keyboard navigation + scroll lock
+  useEffect(() => {
+    const saved = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e) => {
+      if (e.key === 'Escape')     onClose()
+      if (e.key === 'ArrowLeft')  prev()
+      if (e.key === 'ArrowRight') next()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = saved
+    }
+  }, [onClose, prev, next])
+
+  return createPortal(
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.22 }}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 9998,
+        background: 'rgba(0,0,0,0.93)',
+        backdropFilter: 'blur(24px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+      }}
+      onClick={onClose}
+    >
+      {/* Close button */}
+      <button
+        onClick={onClose}
+        style={{
+          position: 'fixed', top: 18, right: 18, zIndex: 9999,
+          width: 38, height: 38, borderRadius: '50%',
+          background: 'rgba(255,255,255,0.08)',
+          border: '1px solid rgba(255,255,255,0.14)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', color: 'rgba(255,255,255,0.7)',
+          backdropFilter: 'blur(8px)',
+          transition: 'background 0.15s, color 0.15s',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.16)'; e.currentTarget.style.color = '#fff' }}
+        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = 'rgba(255,255,255,0.7)' }}
+      >
+        <X size={15} />
+      </button>
+
+      {/* Counter */}
+      {count > 1 && (
+        <div style={{
+          position: 'fixed', top: 22, left: '50%', transform: 'translateX(-50%)', zIndex: 9999,
+          fontSize: 11, fontFamily: 'monospace', color: 'rgba(255,255,255,0.35)',
+          letterSpacing: '0.08em',
+        }}>
+          {idx + 1} / {count}
+        </div>
+      )}
+
+      {/* Image + side arrows */}
+      <motion.div
+        initial={{ scale: 0.94, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.94, opacity: 0 }}
+        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        style={{
+          position: 'relative',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          maxWidth: '92vw', maxHeight: '88vh',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Prev */}
+        {count > 1 && (
+          <button
+            onClick={prev}
+            style={{
+              position: 'absolute', left: -52, zIndex: 1,
+              width: 38, height: 38, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.07)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', color: 'rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(8px)',
+              flexShrink: 0,
+            }}
+          >
+            <ChevronLeft size={16} />
+          </button>
+        )}
+
+        {/* Screenshot */}
+        <div style={{
+          borderRadius: 14,
+          overflow: 'hidden',
+          boxShadow: `0 40px 120px rgba(0,0,0,0.9), 0 0 0 1px ${accent}35`,
+        }}>
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={idx}
+              src={import.meta.env.BASE_URL.replace(/\/$/, '') + srcs[idx]}
+              alt=""
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -12 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              style={{
+                display: 'block',
+                maxWidth: '82vw',
+                maxHeight: '82vh',
+                width: 'auto',
+                height: 'auto',
+                objectFit: 'contain',
+              }}
+            />
+          </AnimatePresence>
+        </div>
+
+        {/* Next */}
+        {count > 1 && (
+          <button
+            onClick={next}
+            style={{
+              position: 'absolute', right: -52, zIndex: 1,
+              width: 38, height: 38, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.07)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer', color: 'rgba(255,255,255,0.6)',
+              backdropFilter: 'blur(8px)',
+              flexShrink: 0,
+            }}
+          >
+            <ChevronRight size={16} />
+          </button>
+        )}
+      </motion.div>
+
+      {/* Dot indicators */}
+      {count > 1 && (
+        <div style={{
+          position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+          display: 'flex', gap: 7, zIndex: 9999,
+        }}>
+          {srcs.map((_, i) => (
+            <button
+              key={i}
+              onClick={e => { e.stopPropagation(); setIdx(i) }}
+              style={{
+                width: i === idx ? 22 : 7, height: 7, borderRadius: 4,
+                background: i === idx ? accent : 'rgba(255,255,255,0.2)',
+                border: 'none', cursor: 'pointer', padding: 0,
+                transition: 'all 0.3s ease',
+              }}
+            />
+          ))}
+        </div>
+      )}
+    </motion.div>,
+    document.body
+  )
+}
+
+// ─── Interactive card-deck stack ─────────────────────────────────────────────
+//
+// Cards sit like physical photos on a desk. The front card is crisp and fully
+// readable. Clicking it sends it behind the others with spring physics, revealing
+// the next screenshot. Hovering the front card lifts it slightly.
+//
+const DECK_SLOTS = [
+  // front — upright, full opacity, sharp
+  { rotate: -1.5, x: 18, y: 32, scale: 1,    opacity: 1,    z: 30, blur: 0   },
+  // middle — leaning right, peeking behind
+  { rotate:  6,   x: 42, y: 14, scale: 0.93, opacity: 0.65, z: 20, blur: 0   },
+  // back — leaning left, barely visible
+  { rotate: -8,   x:  0, y:  6, scale: 0.86, opacity: 0.38, z: 10, blur: 0.5 },
+]
+
+function ScreenshotCarousel({ screenshots, accent }) {
+  const [active, setActive] = useState(0)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const srcs = screenshots.slice(0, 3)
+  const count = srcs.length
+
+  const advance = useCallback(() => {
+    setActive(c => (c + 1) % count)
+  }, [count])
+
+  // Auto-advance every 4 s (pauses while hovered)
+  const paused = useRef(false)
+  useEffect(() => {
+    if (count <= 1) return
+    const id = setInterval(() => { if (!paused.current) advance() }, 4000)
+    return () => clearInterval(id)
+  }, [count, advance])
+
+  const CARD_W = 288
+  const CARD_H = 180   // 16:10
+  // Container must accommodate all offsets comfortably
+  const CTR_W  = CARD_W + 56
+  const CTR_H  = CARD_H + 48
+
   return (
-    <div style={{ position: 'relative', width: 360, height: 240, flexShrink: 0 }}>
-      {screenshots.slice(0, 3).map((src, i) => (
-        <motion.img
-          key={src}
-          src={import.meta.env.BASE_URL.replace(/\/$/, '') + src}
-          alt=""
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: layers[i].opacity, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.15 * (3 - i), ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            position: 'absolute',
-            width: 310,
-            height: 194,
-            objectFit: 'cover',
-            objectPosition: 'top',
-            borderRadius: 10,
-            rotate: layers[i].rotate,
-            x: layers[i].x,
-            y: layers[i].y,
-            zIndex: layers[i].z,
-            boxShadow: `0 16px 48px rgba(0,0,0,0.75), 0 0 0 1px ${accent}40`,
-            userSelect: 'none',
-            pointerEvents: 'none',
-          }}
-        />
-      ))}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 14 }}>
+
+      {/* ── Deck area ── */}
+      <div
+        style={{ position: 'relative', width: CTR_W, height: CTR_H, cursor: count > 1 ? 'pointer' : 'default' }}
+        onClick={advance}
+        onMouseEnter={() => { paused.current = true }}
+        onMouseLeave={() => { paused.current = false }}
+      >
+        {srcs.map((src, i) => {
+          const si    = (i - active + count) % count          // slot index
+          const slot  = DECK_SLOTS[Math.min(si, DECK_SLOTS.length - 1)]
+          const front = si === 0
+
+          return (
+            <motion.div
+              key={src}
+              animate={{
+                rotate:  slot.rotate,
+                x:       slot.x,
+                y:       slot.y,
+                scale:   slot.scale,
+                opacity: slot.opacity,
+                filter:  `blur(${slot.blur}px)`,
+                zIndex:  slot.z,
+              }}
+              transition={{ type: 'spring', stiffness: 280, damping: 28, mass: 0.9 }}
+              whileHover={front ? { y: slot.y - 8, transition: { type: 'spring', stiffness: 400, damping: 30 } } : {}}
+              style={{
+                position:     'absolute',
+                width:        CARD_W,
+                height:       CARD_H,
+                borderRadius: 11,
+                overflow:     'hidden',
+                boxShadow:    front
+                  ? `0 22px 56px rgba(0,0,0,0.85), 0 0 0 1.5px ${accent}55`
+                  : `0 8px 24px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06)`,
+                willChange:   'transform',
+              }}
+            >
+              <img
+                src={import.meta.env.BASE_URL.replace(/\/$/, '') + src}
+                alt=""
+                draggable={false}
+                style={{
+                  width: '100%', height: '100%',
+                  objectFit: 'cover', objectPosition: 'top',
+                  display: 'block', userSelect: 'none', pointerEvents: 'none',
+                }}
+              />
+
+              {/* Accent-tinted gradient on front card only */}
+              {front && (
+                <div style={{
+                  position: 'absolute', inset: 0, pointerEvents: 'none',
+                  background: `linear-gradient(155deg, transparent 60%, ${accent}22 100%)`,
+                }} />
+              )}
+
+              {/* Expand / fullscreen button — top-right of front card */}
+              {front && (
+                <button
+                  onClick={e => { e.stopPropagation(); setLightboxOpen(true) }}
+                  style={{
+                    position: 'absolute', top: 8, right: 8,
+                    width: 28, height: 28, borderRadius: 7,
+                    background: 'rgba(0,0,0,0.6)',
+                    border: '1px solid rgba(255,255,255,0.12)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: 'rgba(255,255,255,0.6)',
+                    backdropFilter: 'blur(6px)',
+                    transition: 'background 0.15s, color 0.15s',
+                    zIndex: 5,
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = `${accent}55`; e.currentTarget.style.color = '#fff' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(0,0,0,0.6)'; e.currentTarget.style.color = 'rgba(255,255,255,0.6)' }}
+                  title="View fullscreen"
+                >
+                  <Maximize2 size={11} />
+                </button>
+              )}
+
+              {/* "click to reveal" badge — only on front card, pulsing */}
+              {front && count > 1 && (
+                <motion.div
+                  animate={{ opacity: [0.45, 0.85, 0.45] }}
+                  transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{
+                    position:       'absolute',
+                    bottom:         10,
+                    right:          10,
+                    display:        'flex',
+                    alignItems:     'center',
+                    gap:            4,
+                    padding:        '3px 9px',
+                    borderRadius:   20,
+                    background:     'rgba(0,0,0,0.68)',
+                    border:         '1px solid rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(8px)',
+                    pointerEvents:  'none',
+                  }}
+                >
+                  <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace', letterSpacing: '0.06em' }}>
+                    click to reveal
+                  </span>
+                  <span style={{ fontSize: 11, color: accent, lineHeight: 1 }}>›</span>
+                </motion.div>
+              )}
+            </motion.div>
+          )
+        })}
+      </div>
+
+      {/* ── Dot indicators ── */}
+      {count > 1 && (
+        <div style={{ display: 'flex', gap: 6, paddingLeft: 20 }}>
+          {srcs.map((_, i) => (
+            <button
+              key={i}
+              onClick={(e) => { e.stopPropagation(); setActive(i) }}
+              style={{
+                width:      i === active ? 20 : 6,
+                height:     6,
+                borderRadius: 3,
+                background: i === active ? accent : 'rgba(255,255,255,0.15)',
+                border:     'none',
+                cursor:     'pointer',
+                padding:    0,
+                transition: 'all 0.3s ease',
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* ── Lightbox ── */}
+      <AnimatePresence>
+        {lightboxOpen && (
+          <ScreenshotLightbox
+            srcs={srcs}
+            startIndex={active}
+            accent={accent}
+            onClose={() => setLightboxOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
@@ -328,8 +651,8 @@ function FeaturedProjectCard({ project, index, t, isHero }) {
       {textContent}
 
       {hasScreenshots && (
-        <div className="hidden lg:flex items-center justify-center">
-          <StackedScreenshots screenshots={project.screenshots} accent={project.accent} />
+        <div className="flex justify-center lg:justify-end lg:flex-shrink-0 mt-4 lg:mt-0 overflow-hidden">
+          <ScreenshotCarousel screenshots={project.screenshots} accent={project.accent} />
         </div>
       )}
     </motion.div>
