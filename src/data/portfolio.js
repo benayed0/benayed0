@@ -3,7 +3,11 @@ export const personal = {
   title: 'Full-Stack Engineer',
   tagline: 'Building AI-powered products\nand scalable software systems.',
   bio: 'I engineer products that solve real problems — from robust backends and clean APIs to AI-integrated interfaces. I care about the full stack: performance, developer experience, and the end user.',
-  location: 'Tunisia',
+  locations: [
+    { name: 'Tunisia', flag: '🇹🇳' },
+    { name: 'France',  flag: '🇫🇷' },
+  ],
+  remote: true,
   email: 'benayed.aziz.98@gmail.com',
   linkedin: 'https://www.linkedin.com/in/mohamed-aziz-ben-ayed-62a018176',
   availableForWork: true,

@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
-import { ArrowRight, Linkedin, Mail, ChevronDown } from 'lucide-react'
+import { ArrowRight, Linkedin, Mail, ChevronDown, Globe } from 'lucide-react'
 import { personal } from '../data/portfolio'
 import { useLanguage } from '../context/LanguageContext'
 
@@ -157,14 +157,35 @@ export default function Hero() {
             className="mb-10 inline-flex"
           >
             {personal.availableForWork && (
-              <div className="flex items-center gap-2.5 px-4 py-2 rounded-full glass border border-white/[0.08] text-sm">
-                <span className="relative flex h-2 w-2">
+              <div className="flex flex-wrap items-center gap-2.5 px-4 py-2 rounded-full glass border border-white/[0.08] text-sm">
+                {/* Available dot */}
+                <span className="relative flex h-2 w-2 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
                 <span className="text-emerald-400 font-medium">{t('nav.openTo')}</span>
-                <span className="text-zinc-600">·</span>
-                <span className="text-zinc-500">{personal.location}</span>
+
+                <span className="text-zinc-700">·</span>
+
+                {/* Location flags */}
+                {personal.locations.map((loc, i) => (
+                  <span key={loc.name} className="flex items-center gap-1.5">
+                    {i > 0 && <span className="text-zinc-700 text-xs">/</span>}
+                    <span className="text-base leading-none">{loc.flag}</span>
+                    <span className="text-zinc-400 text-xs font-mono">{loc.name}</span>
+                  </span>
+                ))}
+
+                {/* Remote badge */}
+                {personal.remote && (
+                  <>
+                    <span className="text-zinc-700">·</span>
+                    <span className="flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono font-medium bg-violet-500/10 text-violet-400 border border-violet-500/20">
+                      <Globe size={10} />
+                      Remote
+                    </span>
+                  </>
+                )}
               </div>
             )}
           </motion.div>
