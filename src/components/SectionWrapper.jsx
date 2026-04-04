@@ -9,20 +9,25 @@ const containerVariants = {
 }
 
 export const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 0, y: 40, filter: 'blur(8px)' },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
+    filter: 'blur(0px)',
+    transition: { duration: 0.75, ease: [0.16, 1, 0.3, 1] },
   },
 }
 
 export function SectionLabel({ children }) {
   return (
     <motion.div variants={itemVariants} className="flex items-center gap-3 mb-6">
-      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-medium text-accent-light bg-accent/10 border border-accent/20 tracking-widest uppercase">
+      <motion.span
+        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-mono font-medium text-accent-light bg-accent/10 border border-accent/20 tracking-widest uppercase"
+        whileHover={{ scale: 1.05, borderColor: 'rgba(124,58,237,0.5)' }}
+        transition={{ duration: 0.2 }}
+      >
         {children}
-      </span>
+      </motion.span>
     </motion.div>
   )
 }

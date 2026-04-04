@@ -1,144 +1,336 @@
-import { motion } from 'framer-motion'
-import { ExternalLink } from 'lucide-react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
+import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion'
+import { ExternalLink, ArrowUpRight } from 'lucide-react'
 import SectionWrapper, {
   SectionLabel,
   SectionHeading,
   itemVariants,
 } from '../components/SectionWrapper'
-import Badge from '../components/ui/Badge'
 import { projects } from '../data/portfolio'
 import { useLanguage } from '../context/LanguageContext'
+import { useCursor } from '../context/CursorContext'
 
-function FeaturedProjectCard({ project, t }) {
-  const description = t(`projects.items.${project.id}.description`)
+const PREVIEW_W = 360
+const PREVIEW_H = 230
 
+// ─── Sliding strip of all project previews ────────────────────────────────────
+function PreviewStrip({ activeIndex, t }) {
   return (
-    <motion.div
-      variants={itemVariants}
-      whileHover={{ y: -6 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="group relative col-span-1 md:col-span-2 rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300"
-      style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)' }}
-    >
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at top left, ${project.accent}18 0%, transparent 60%)` }}
-      />
-      <div
-        className="absolute top-0 left-0 right-0 h-px opacity-60 group-hover:opacity-100 transition-opacity duration-300"
-        style={{ background: `linear-gradient(90deg, ${project.accent}, transparent)` }}
-      />
+    <div style={{ width: PREVIEW_W, height: PREVIEW_H, overflow: 'hidden', borderRadius: 18 }}>
+      {/* Slides to reveal the active project */}
+      <motion.div
+        animate={{ y: -activeIndex * PREVIEW_H }}
+        transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+        style={{ willChange: 'transform' }}
+      >
+        {projects.map((project, i) => {
+          const description = t(`projects.items.${project.id}.description`)
+          return (
+            <div
+              key={project.id}
+              style={{
+                width: PREVIEW_W,
+                height: PREVIEW_H,
+                background: `linear-gradient(140deg, #0f0f0f 0%, ${project.accent}22 55%, ${project.accent}0a 100%)`,
+                border: `1px solid ${project.accent}30`,
+                borderRadius: 18,
+                padding: '22px 22px 18px',
+                display: 'flex',
+                flexDirection: 'column',
+                boxSizing: 'border-box',
+              }}
+            >
+              {/* Header row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+                <span style={{ fontFamily: 'monospace', fontSize: 11, color: project.accent, opacity: 0.9 }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <div style={{ height: 1, flex: 1, background: `linear-gradient(90deg, ${project.accent}60, transparent)` }} />
+                {project.featured && (
+                  <span style={{
+                    fontSize: 8, fontFamily: 'monospace', letterSpacing: '0.1em',
+                    color: project.accent, padding: '2px 7px', borderRadius: 99,
+                    background: `${project.accent}18`, border: `1px solid ${project.accent}28`,
+                  }}>
+                    FEATURED
+                  </span>
+                )}
+              </div>
 
-      <div className="relative p-8 md:p-10">
-        <div className="flex items-start justify-between mb-6">
-          <div>
-            <div className="flex items-center gap-3 mb-3">
-              <span
-                className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-mono font-medium border"
-                style={{ color: project.accent, background: `${project.accent}15`, borderColor: `${project.accent}30` }}
-              >
-                {t('projects.featured')}
-              </span>
+              {/* Title */}
+              <div style={{ fontSize: 20, fontWeight: 700, color: '#f4f4f5', marginBottom: 7, lineHeight: 1.2 }}>
+                {project.title}
+              </div>
+
+              {/* Description */}
+              <div style={{
+                fontSize: 11, color: '#71717a', lineHeight: 1.65, flex: 1,
+                overflow: 'hidden',
+                display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
+              }}>
+                {description}
+              </div>
+
+              {/* Tech pills */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 10 }}>
+                {project.tech.slice(0, 4).map((tech) => (
+                  <span key={tech} style={{
+                    fontSize: 10, padding: '2px 8px', borderRadius: 5,
+                    background: `${project.accent}14`, color: `${project.accent}cc`,
+                    border: `1px solid ${project.accent}22`,
+                    fontFamily: 'monospace',
+                  }}>
+                    {tech}
+                  </span>
+                ))}
+                {project.tech.length > 4 && (
+                  <span style={{ fontSize: 10, color: '#52525b', fontFamily: 'monospace', padding: '2px 0' }}>
+                    +{project.tech.length - 4}
+                  </span>
+                )}
+              </div>
             </div>
-            <h3 className="text-2xl md:text-3xl font-bold text-zinc-100 tracking-tight group-hover:text-white transition-colors">
-              {project.title}
-            </h3>
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {project.live && (
-              <motion.a href={project.live} target="_blank" rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
-                className="p-2 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-white/5 transition-colors" aria-label="Live demo">
-                <ExternalLink size={18} />
-              </motion.a>
-            )}
-          </div>
-        </div>
-
-        <p className="text-zinc-400 text-base leading-relaxed mb-8 max-w-2xl">{description}</p>
-
-        <div className="flex flex-wrap gap-2">
-          {project.tech.map((t) => <Badge key={t}>{t}</Badge>)}
-        </div>
-      </div>
-    </motion.div>
+          )
+        })}
+      </motion.div>
+    </div>
   )
 }
 
-function ProjectCard({ project, t }) {
-  const description = t(`projects.items.${project.id}.description`)
+// ─── Three cursor-following elements (Larose technique) ───────────────────────
+function ProjectCursorElements({ active, activeIndex, t }) {
+  const mx = useMotionValue(-500)
+  const my = useMotionValue(-500)
 
+  // Each follows at a different speed — layered trailing effect
+  const previewX = useSpring(mx, { stiffness: 100, damping: 22 })  // slowest
+  const previewY = useSpring(my, { stiffness: 100, damping: 22 })
+
+  const circleX = useSpring(mx, { stiffness: 200, damping: 28 })   // medium
+  const circleY = useSpring(my, { stiffness: 200, damping: 28 })
+
+  const labelX = useSpring(mx, { stiffness: 240, damping: 28 })    // fastest
+  const labelY = useSpring(my, { stiffness: 240, damping: 28 })
+
+  useEffect(() => {
+    const onMove = (e) => {
+      mx.set(e.clientX)
+      my.set(e.clientY)
+    }
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  }, [mx, my])
+
+  const scaleAnim = {
+    initial: { scale: 0, opacity: 0, filter: 'blur(6px)' },
+    enter:   { scale: 1, opacity: 1, filter: 'blur(0px)', transition: { duration: 0.4, ease: [0.76, 0, 0.24, 1] } },
+    closed:  { scale: 0, opacity: 0, filter: 'blur(6px)', transition: { duration: 0.3, ease: [0.32, 0, 0.67, 0] } },
+  }
+
+  return createPortal(
+    <>
+      {/* Large preview card */}
+      <motion.div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          x: previewX,
+          y: previewY,
+          translateX: '-50%',
+          translateY: '-50%',
+          pointerEvents: 'none',
+          zIndex: 9990,
+        }}
+        variants={scaleAnim}
+        initial="initial"
+        animate={active ? 'enter' : 'closed'}
+      >
+        <PreviewStrip activeIndex={activeIndex} t={t} />
+      </motion.div>
+
+      {/* Circle */}
+      <motion.div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          x: circleX,
+          y: circleY,
+          translateX: '-50%',
+          translateY: '-50%',
+          pointerEvents: 'none',
+          zIndex: 9991,
+          width: 64,
+          height: 64,
+          borderRadius: '50%',
+          background: 'rgba(124,58,237,0.85)',
+          backdropFilter: 'blur(4px)',
+        }}
+        variants={scaleAnim}
+        initial="initial"
+        animate={active ? 'enter' : 'closed'}
+      />
+
+      {/* "View" label */}
+      <motion.div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          x: labelX,
+          y: labelY,
+          translateX: '-50%',
+          translateY: '-50%',
+          pointerEvents: 'none',
+          zIndex: 9992,
+          fontSize: 11,
+          fontFamily: 'monospace',
+          fontWeight: 600,
+          letterSpacing: '0.12em',
+          color: '#ffffff',
+          textTransform: 'uppercase',
+        }}
+        variants={scaleAnim}
+        initial="initial"
+        animate={active ? 'enter' : 'closed'}
+      >
+        View
+      </motion.div>
+    </>,
+    document.body
+  )
+}
+
+// ─── Single project row ────────────────────────────────────────────────────────
+function ProjectRow({ project, index, onEnter, onLeave }) {
   return (
     <motion.div
       variants={itemVariants}
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.25, ease: 'easeOut' }}
-      className="group relative rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 flex flex-col"
-      style={{ background: '#111111', border: '1px solid rgba(255,255,255,0.07)' }}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      className="group relative border-b border-white/[0.05] last:border-0 cursor-none"
     >
+      {/* Hover bg wash from left */}
       <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{ background: `radial-gradient(ellipse at top left, ${project.accent}12 0%, transparent 65%)` }}
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{ background: `linear-gradient(90deg, ${project.accent}10 0%, transparent 70%)` }}
       />
-      <div
-        className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-60 transition-opacity duration-300"
-        style={{ background: `linear-gradient(90deg, ${project.accent}, transparent 60%)` }}
+      {/* Left accent bar */}
+      <motion.div
+        className="absolute left-0 top-2 bottom-2 w-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        style={{ background: project.accent }}
       />
 
-      <div className="relative p-6 flex flex-col flex-1">
-        <div className="flex items-start justify-between mb-4">
-          <div className="w-8 h-8 rounded-lg opacity-80"
-            style={{ background: `${project.accent}20`, border: `1px solid ${project.accent}25` }}>
-            <div className="w-full h-full rounded-lg" style={{ background: `${project.accent}30` }} />
-          </div>
-          {project.live && (
-            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <a href={project.live} target="_blank" rel="noopener noreferrer"
-                className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-200 transition-colors" aria-label="Live">
-                <ExternalLink size={15} />
-              </a>
-            </div>
+      <div className="relative flex items-center gap-5 md:gap-8 py-4 md:py-5 px-5 md:px-6">
+        {/* Index */}
+        <span className="text-xs font-mono text-zinc-700 group-hover:text-zinc-500 transition-colors duration-300 w-5 shrink-0 tabular-nums select-none">
+          {String(index + 1).padStart(2, '0')}
+        </span>
+
+        {/* Title + featured badge */}
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <h3 className="text-base md:text-lg font-semibold text-zinc-400 group-hover:text-white transition-colors duration-300 truncate">
+            {project.title}
+          </h3>
+          {project.featured && (
+            <span
+              className="hidden sm:inline-flex shrink-0 items-center px-2 py-0.5 rounded-full text-[9px] font-mono tracking-widest border uppercase"
+              style={{ color: project.accent, background: `${project.accent}14`, borderColor: `${project.accent}28` }}
+            >
+              Featured
+            </span>
           )}
         </div>
 
-        <h3 className="text-lg font-semibold text-zinc-100 mb-2 group-hover:text-white transition-colors">
-          {project.title}
-        </h3>
-        <p className="text-sm text-zinc-500 leading-relaxed flex-1 mb-5">{description}</p>
+        {/* Tech stack — desktop only */}
+        <div className="hidden lg:flex items-center gap-4 shrink-0">
+          {project.tech.slice(0, 3).map((tech) => (
+            <span key={tech} className="text-xs font-mono text-zinc-600 group-hover:text-zinc-400 transition-colors duration-300">
+              {tech}
+            </span>
+          ))}
+          {project.tech.length > 3 && (
+            <span className="text-xs font-mono text-zinc-700">+{project.tech.length - 3}</span>
+          )}
+        </div>
 
-        <div className="flex flex-wrap gap-1.5 mt-auto">
-          {project.tech.slice(0, 4).map((t) => <Badge key={t}>{t}</Badge>)}
-          {project.tech.length > 4 && <Badge>+{project.tech.length - 4}</Badge>}
+        {/* Arrow / link */}
+        <div className="shrink-0 transition-all duration-300 group-hover:translate-x-1">
+          {project.live ? (
+            <a href={project.live} target="_blank" rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="text-zinc-700 group-hover:text-zinc-300 transition-colors block cursor-none">
+              <ExternalLink size={14} />
+            </a>
+          ) : (
+            <ArrowUpRight size={14} className="text-zinc-700 group-hover:text-zinc-400 transition-colors duration-300" />
+          )}
         </div>
       </div>
     </motion.div>
   )
 }
 
+// ─── Projects section ─────────────────────────────────────────────────────────
 export default function Projects() {
   const { t } = useLanguage()
-  const featured = projects.filter((p) => p.featured)
-  const rest = projects.filter((p) => !p.featured)
+  const { setCursor } = useCursor()
+  const [modal, setModal] = useState({ active: false, index: 0 })
+  const [isPointerDevice, setIsPointerDevice] = useState(false)
+
+  useEffect(() => {
+    setIsPointerDevice(window.matchMedia('(hover: hover) and (pointer: fine)').matches)
+  }, [])
+
+  const handleEnter = useCallback((i) => {
+    setModal({ active: true, index: i })
+    setCursor({ text: 'View', type: 'project' })
+  }, [setCursor])
+
+  const handleLeave = useCallback((i) => {
+    setModal({ active: false, index: i })
+    setCursor({ text: '', type: 'default' })
+  }, [setCursor])
 
   return (
-    <SectionWrapper id="projects">
-      <div className="mb-12">
-        <SectionLabel>{t('projects.label')}</SectionLabel>
-        <SectionHeading>
-          {t('projects.heading1')}
-          <br />
-          <span className="text-zinc-500">{t('projects.heading2')}</span>
-        </SectionHeading>
-      </div>
+    <>
+      <SectionWrapper id="projects">
+        <div className="mb-10">
+          <SectionLabel>{t('projects.label')}</SectionLabel>
+          <SectionHeading>
+            {t('projects.heading1')}
+            <br />
+            <span className="text-zinc-500">{t('projects.heading2')}</span>
+          </SectionHeading>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {featured.map((project) => (
-          <FeaturedProjectCard key={project.id} project={project} t={t} />
-        ))}
-        {rest.map((project) => (
-          <ProjectCard key={project.id} project={project} t={t} />
-        ))}
-      </div>
-    </SectionWrapper>
+        <motion.div
+          variants={itemVariants}
+          style={{ border: '1px solid rgba(255,255,255,0.06)', background: '#0c0c0c', borderRadius: 20 }}
+          className="overflow-hidden"
+        >
+          {projects.map((project, i) => (
+            <ProjectRow
+              key={project.id}
+              project={project}
+              index={i}
+              onEnter={() => handleEnter(i)}
+              onLeave={() => handleLeave(i)}
+            />
+          ))}
+        </motion.div>
+      </SectionWrapper>
+
+      {/* Floating preview — portal, only on pointer devices */}
+      {isPointerDevice && (
+        <ProjectCursorElements
+          active={modal.active}
+          activeIndex={modal.index}
+          t={t}
+        />
+      )}
+    </>
   )
 }
