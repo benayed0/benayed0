@@ -1,4 +1,3 @@
-import { useRef } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { ArrowRight, Linkedin, Mail, ChevronDown, Globe } from 'lucide-react'
 import { personal } from '../data/portfolio'
@@ -80,7 +79,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative min-h-screen flex flex-col justify-center overflow-hidden"
+      className="relative min-h-screen flex flex-col justify-center"
       onPointerMove={(e) => {
         if (e.pointerType === 'touch') return
         const r = e.currentTarget.getBoundingClientRect()
@@ -90,7 +89,7 @@ export default function Hero() {
     >
 
       {/* ── Background ── */}
-      <div className="absolute inset-0 pointer-events-none select-none">
+      <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
 
         {/* Aurora orb 1 – top-right */}
         <motion.div
@@ -168,13 +167,15 @@ export default function Hero() {
                 <span className="text-zinc-700">·</span>
 
                 {/* Location flags */}
-                {personal.locations.map((loc, i) => (
-                  <span key={loc.name} className="flex items-center gap-1.5">
-                    {i > 0 && <span className="text-zinc-700 text-xs">/</span>}
-                    <span className="text-base leading-none">{loc.flag}</span>
-                    <span className="text-zinc-400 text-xs font-mono">{loc.name}</span>
-                  </span>
-                ))}
+                <span className="flex items-center gap-1.5 whitespace-nowrap">
+                  {personal.locations.map((loc, i) => (
+                    <span key={loc.name} className="flex items-center gap-1.5">
+                      {i > 0 && <span className="text-zinc-700 text-xs">/</span>}
+                      <span className="text-base leading-none">{loc.flag}</span>
+                      <span className="text-zinc-400 text-xs font-mono">{loc.name}</span>
+                    </span>
+                  ))}
+                </span>
 
                 {/* Remote badge */}
                 {personal.remote && (
@@ -191,18 +192,20 @@ export default function Hero() {
           </motion.div>
 
           {/* Name – letter by letter perspective flip */}
-          <div className="mb-6 overflow-hidden">
-            <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[0.95]">
-              <SplitText text="Aziz" className="text-zinc-100 block" delay={0.15} stagger={0.055} />
-              <SplitText text="Ben Ayed" className="gradient-text block" delay={0.4} stagger={0.05} />
-              <motion.span
-                initial={{ opacity: 0, scale: 0.3, rotate: -20 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ duration: 0.5, delay: 0.95, ease: [0.34, 1.56, 0.64, 1] }}
-                className="text-accent-light inline-block"
-              >
-                .
-              </motion.span>
+          <div className="mb-6">
+            <h1 className="text-5xl sm:text-7xl md:text-8xl font-bold tracking-tight leading-[0.95] pb-3">
+              <div><SplitText text="Aziz" className="text-zinc-100" delay={0.15} stagger={0.055} /></div>
+              <div className="flex items-baseline">
+                <SplitText text="Ben Ayed" className="gradient-text" delay={0.4} stagger={0.05} />
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.3, rotate: -20 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.5, delay: 0.95, ease: [0.34, 1.56, 0.64, 1] }}
+                  className="text-accent-light inline-block"
+                >
+                  .
+                </motion.span>
+              </div>
             </h1>
           </div>
 
@@ -214,7 +217,7 @@ export default function Hero() {
                 { text: t('hero.tagline2'), accent: true },
                 { text: t('hero.tagline3'), accent: false },
               ].map(({ text, accent }, pi) =>
-                text.split(' ').map((word, wi, arr) => (
+                text.split(' ').map((word, wi) => (
                   <motion.span
                     key={`${pi}-${wi}`}
                     initial={{ opacity: 0, filter: 'blur(10px)', y: 12 }}
@@ -309,7 +312,7 @@ export default function Hero() {
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.4, delay: 2.25 }}
-              className="text-zinc-600 text-xs font-mono tracking-wide"
+              className="hidden sm:block text-zinc-600 text-xs font-mono tracking-wide truncate"
             >
               {personal.email}
             </motion.span>

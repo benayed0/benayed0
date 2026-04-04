@@ -49,7 +49,7 @@ export default function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 
   return (
-    <footer className="relative border-t border-white/[0.05] mt-10">
+    <footer className="relative border-t border-white/[0.05]">
       {/* Glow accent */}
       <div
         className="absolute top-0 left-1/2 -translate-x-1/2 h-px w-48 blur-sm"
