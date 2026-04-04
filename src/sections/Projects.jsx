@@ -780,7 +780,7 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              className="shrink-0 opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity duration-200"
+              className="hidden lg:inline-flex shrink-0 opacity-0 group-hover:opacity-60 hover:!opacity-100 transition-opacity duration-200"
               style={{ color: project.accent }}
               title={project.url || project.live}
             >
