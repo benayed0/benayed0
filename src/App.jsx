@@ -1,3 +1,4 @@
+import { LanguageProvider } from './context/LanguageContext'
 import { CursorProvider } from './context/CursorContext'
 import CustomCursor from './components/CustomCursor'
 import Navigation from './components/Navigation'
@@ -17,6 +18,7 @@ const Divider = () => (
 
 export default function App() {
   return (
+    <LanguageProvider>
     <CursorProvider>
       <CustomCursor />
       <div className="noise-overlay">
@@ -37,5 +39,6 @@ export default function App() {
         <Footer />
       </div>
     </CursorProvider>
+    </LanguageProvider>
   )
 }
