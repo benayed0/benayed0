@@ -31,7 +31,7 @@ export const projects = [
   },
   {
     id: 2,
-    title: 'Mongela',
+    title: 'Dream Time',
     tech: ['Angular', 'NestJS', 'Prisma', 'Neon', 'TypeScript'],
     live: null,
     featured: false,

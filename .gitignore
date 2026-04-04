@@ -20,3 +20,4 @@ vite.config.js.timestamp-*
 *.ntvs*
 *.njsproj
 *.sln
+.playwright-mcp/

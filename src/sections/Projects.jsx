@@ -107,12 +107,6 @@ function ProjectCursorElements({ active, activeIndex, t }) {
   const previewX = useSpring(mx, { stiffness: 100, damping: 22 })  // slowest
   const previewY = useSpring(my, { stiffness: 100, damping: 22 })
 
-  const circleX = useSpring(mx, { stiffness: 200, damping: 28 })   // medium
-  const circleY = useSpring(my, { stiffness: 200, damping: 28 })
-
-  const labelX = useSpring(mx, { stiffness: 240, damping: 28 })    // fastest
-  const labelY = useSpring(my, { stiffness: 240, damping: 28 })
-
   useEffect(() => {
     const onMove = (e) => {
       mx.set(e.clientX)
@@ -150,54 +144,7 @@ function ProjectCursorElements({ active, activeIndex, t }) {
         <PreviewStrip activeIndex={activeIndex} t={t} />
       </motion.div>
 
-      {/* Circle */}
-      <motion.div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          x: circleX,
-          y: circleY,
-          translateX: '-50%',
-          translateY: '-50%',
-          pointerEvents: 'none',
-          zIndex: 9991,
-          width: 64,
-          height: 64,
-          borderRadius: '50%',
-          background: 'rgba(124,58,237,0.85)',
-          backdropFilter: 'blur(4px)',
-        }}
-        variants={scaleAnim}
-        initial="initial"
-        animate={active ? 'enter' : 'closed'}
-      />
 
-      {/* "View" label */}
-      <motion.div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          x: labelX,
-          y: labelY,
-          translateX: '-50%',
-          translateY: '-50%',
-          pointerEvents: 'none',
-          zIndex: 9992,
-          fontSize: 11,
-          fontFamily: 'monospace',
-          fontWeight: 600,
-          letterSpacing: '0.12em',
-          color: '#ffffff',
-          textTransform: 'uppercase',
-        }}
-        variants={scaleAnim}
-        initial="initial"
-        animate={active ? 'enter' : 'closed'}
-      >
-        View
-      </motion.div>
     </>,
     document.body
   )
