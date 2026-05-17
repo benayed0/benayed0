@@ -144,7 +144,7 @@ export const projects = [
     tech: ['TypeScript', 'NestJS'],
     featured: false,
     accent: '#4f46e5',
-    live:'https://factunorm.pages.dev'
+    live:'https://factunorm.fr'
   },
   {
     id: 13,
