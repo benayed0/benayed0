@@ -1011,15 +1011,15 @@ export default function Projects() {
 
         {/* ── Featured showcase cards ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
-          <div className="md:col-span-2">
-            <FeaturedProjectCard project={featuredProjects[0]} index={0} t={t} isHero={true} />
-          </div>
-          {featuredProjects[1] && (
-            <FeaturedProjectCard project={featuredProjects[1]} index={1} t={t} isHero={false} />
-          )}
-          {featuredProjects[2] && (
-            <FeaturedProjectCard project={featuredProjects[2]} index={2} t={t} isHero={false} />
-          )}
+          {/* Desktop (browser-frame) shots need full width to stay legible; phone shots fit half. */}
+          {featuredProjects.map((p, i) => {
+            const wide = p.frame !== 'phone'
+            return (
+              <div key={p.id} className={wide ? 'md:col-span-2' : ''}>
+                <FeaturedProjectCard project={p} index={i} t={t} isHero={wide} />
+              </div>
+            )
+          })}
         </div>
 
         {/* ── Divider ── */}
