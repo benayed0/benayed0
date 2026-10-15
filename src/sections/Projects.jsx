@@ -313,7 +313,9 @@ function ScreenshotLightbox({ srcs, startIndex, accent, onClose }) {
 // transitions, auto-advancing progress, and accent glow. Designed to make
 // screenshots readable at a glance — no fullscreen needed.
 //
-function ScreenshotShowcase({ screenshots, accent, url }) {
+// ponytail: frame="phone" is a branch of the same component (shared timer,
+// tilt, dots, lightbox) — it fans pre-framed portrait shots instead of chrome.
+function ScreenshotShowcase({ screenshots, accent, url, frame = 'browser', compact = false }) {
   const [active, setActive] = useState(0)
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const paused = useRef(false)
@@ -372,10 +374,68 @@ function ScreenshotShowcase({ screenshots, accent, url }) {
 
   const goTo = (i) => { setActive(i); setProgress(0) }
 
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '')
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-      {/* ── Perspective wrapper ── */}
+      {frame === 'phone' ? (
+        /* ── Phone fan: active screen in front, neighbours tilted behind ── */
+        <div
+          ref={containerRef}
+          onMouseMove={onMouseMove}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          style={{ perspective: 1200, overflow: 'hidden', padding: '8px 0' }}
+        >
+          <motion.div
+            style={{
+              rotateX: springRX,
+              rotateY: springRY,
+              transformStyle: 'preserve-3d',
+              position: 'relative',
+              height: compact ? 'clamp(260px, 60vw, 360px)' : 'clamp(300px, 62vw, 470px)',
+              willChange: 'transform',
+            }}
+          >
+            <div style={{
+              position: 'absolute', left: '50%', top: '50%', width: '45%', height: '60%',
+              transform: 'translate(-50%, -50%)', borderRadius: '50%',
+              background: accent, opacity: 0.18, filter: 'blur(60px)', pointerEvents: 'none',
+            }} />
+            {srcs.map((src, i) => {
+              const off = ((i - active + count + 1) % count) - 1 // -1 left, 0 front, 1 right
+              return (
+                <motion.img
+                  key={src}
+                  src={base + src}
+                  alt=""
+                  draggable={false}
+                  onClick={() => (off ? goTo(i) : setLightboxOpen(true))}
+                  initial={false}
+                  animate={{
+                    x: `${-50 + off * 62}%`,
+                    scale: off ? 0.8 : 1,
+                    rotateY: off * -22,
+                    opacity: off ? 0.5 : 1,
+                  }}
+                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  style={{
+                    position: 'absolute', left: '50%', top: 0,
+                    height: '100%', width: 'auto',
+                    borderRadius: 22,
+                    zIndex: off ? 1 : 2,
+                    cursor: off ? 'pointer' : 'zoom-in',
+                    filter: `drop-shadow(0 24px 40px rgba(0,0,0,0.6))${off ? ' brightness(0.7)' : ''}`,
+                    userSelect: 'none',
+                  }}
+                />
+              )
+            })}
+          </motion.div>
+        </div>
+      ) : (
+      /* ── Perspective wrapper ── */
       <div
         ref={containerRef}
         onMouseMove={onMouseMove}
@@ -498,6 +558,7 @@ function ScreenshotShowcase({ screenshots, accent, url }) {
           </div>
         </motion.div>
       </div>
+      )}
 
       {/* ── Progress dots ── */}
       {count > 1 && (
@@ -564,7 +625,7 @@ function FeaturedProjectCard({ project, index, t, isHero }) {
   const techToShow = isHero ? project.tech : project.tech.slice(0, 4)
   const techOverflow = isHero ? 0 : project.tech.length - 4
 
-  const hasScreenshots = isHero && project.screenshots?.length > 0
+  const hasScreenshots = project.screenshots?.length > 0
 
   const textContent = (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14, flex: 1, minWidth: 0 }}>
@@ -717,7 +778,7 @@ function FeaturedProjectCard({ project, index, t, isHero }) {
 
       {hasScreenshots && (
         <div className="group/showcase w-full mt-2">
-          <ScreenshotShowcase screenshots={project.screenshots} accent={project.accent} url={project.live} />
+          <ScreenshotShowcase screenshots={project.screenshots} accent={project.accent} url={project.live} frame={project.frame} compact={!isHero} />
         </div>
       )}
     </motion.div>
@@ -793,6 +854,11 @@ function ProjectRow({ project, index, t, onEnter, onLeave, isExpanded, onToggle 
               style={{ color: project.accent, background: `${project.accent}14`, borderColor: `${project.accent}28` }}
             >
               Featured
+            </span>
+          )}
+          {project.status && (
+            <span className="inline-flex shrink-0 items-center px-2 py-0.5 rounded-full text-[9px] font-mono tracking-widest border uppercase text-amber-400 bg-amber-400/10 border-amber-400/25">
+              {t(`projects.status.${project.status}`)}
             </span>
           )}
         </div>

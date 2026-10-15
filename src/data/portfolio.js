@@ -1,8 +1,8 @@
 export const personal = {
   name: 'Aziz Ben Ayed',
-  title: 'Full-Stack Engineer',
-  tagline: 'Building AI-powered products\nand scalable software systems.',
-  bio: 'I engineer products that solve real problems — from robust backends and clean APIs to AI-integrated interfaces. I care about the full stack: performance, developer experience, and the end user.',
+  title: 'Full-Stack Product Engineer',
+  tagline: 'Shipping production SaaS end to end —\nweb, mobile, payments, and infrastructure.',
+  bio: 'I take products from empty repo to real users on my own — API, web and native apps, billing, compliance, and the servers they run on. Lately: a French e-invoicing SaaS used by 160+ businesses and a wallet-based loyalty platform.',
   locations: [
     { name: 'Tunisia', flag: '🇹🇳' },
     { name: 'France',  flag: '🇫🇷' },
@@ -14,19 +14,51 @@ export const personal = {
 }
 
 export const stats = [
-  { value: '5+', label: 'Years of\nexperience' },
+  { value: '6+', label: 'Years of\nexperience' },
   { value: '15+', label: 'Projects\nshipped' },
-  { value: 'Full', label: 'Stack\nengineer' },
-  { value: 'AI', label: 'Native\nbuilder' },
+  { value: '160+', label: 'Businesses on\nFactunorm' },
+  { value: '3', label: 'Live SaaS\nproducts' },
 ]
 
 export const projects = [
+  {
+    id: 12,
+    title: 'Factunorm',
+    tagline: 'Compliant French e-invoicing for micro-entrepreneurs — web, iOS & Android.',
+    favicon: '/favicons/factunorm.ico',
+    tech: ['Angular', 'NestJS', 'PostgreSQL RLS', 'Capacitor', 'Stripe', 'RevenueCat', 'BullMQ', 'Cloudflare R2', 'Gemini'],
+    featured: true,
+    accent: '#4f46e5',
+    live: 'https://factunorm.fr',
+    frame: 'phone',
+    screenshots: [
+      '/screenshots/factunorm-1.png',
+      '/screenshots/factunorm-2.png',
+      '/screenshots/factunorm-3.png',
+    ],
+  },
+  {
+    id: 16,
+    title: 'iStampr',
+    tagline: 'Digital loyalty cards that live in Apple & Google Wallet.',
+    favicon: '/favicons/istampr.png',
+    tech: ['NestJS', 'Prisma', 'PostgreSQL', 'Angular', 'Expo', 'Apple PassKit', 'Google Wallet API', 'Redis', 'Astro'],
+    featured: true,
+    accent: '#f59e0b',
+    live: 'https://istampr.com',
+    frame: 'phone',
+    screenshots: [
+      '/screenshots/istampr-1.jpg',
+      '/screenshots/istampr-2.jpg',
+      '/screenshots/istampr-3.jpg',
+    ],
+  },
   {
     id: 1,
     title: 'MyPubli AI',
     tagline: 'Real-time collaborative AI writing for researchers.',
     favicon: '/favicons/mypubli.ico',
-    tech: ['Angular', 'NestJS', 'Python', 'Yjs', 'OpenAI', 'OVH API', 'Grafana'],
+    tech: ['Angular', 'NestJS', 'Python', 'Yjs', 'OpenAI', 'Kubernetes', 'Grafana'],
     featured: true,
     accent: '#7c3aed',
     live: 'https://mypubli.ai',
@@ -37,23 +69,14 @@ export const projects = [
     ],
   },
   {
-    id: 3,
-    title: 'ParkUp',
-    tagline: 'Four apps. One platform. Real-time enforcement, thermal printing, and geospatial parking.',
-    favicon: '/favicons/parkup.png',
-    tech: ['Flutter', 'Angular', 'NestJS', 'Socket.IO', 'Mapbox', 'MongoDB'],
-    featured: true,
-    accent: '#059669',
-    live:'https://parkup-nine.vercel.app'
-  },
-  {
     id: 6,
     title: 'Phonix',
-    tagline: '5 years. One platform. Therapists, parents, kids, and doctors — united.',
+    tagline: 'Therapists, parents, kids, and doctors — one platform.',
     favicon: '/favicons/phonix.png',
-    tech: ['TypeScript', 'NestJS', 'Angular', 'AWS', 'Firebase', 'GPU'],
-    live: 'https://phonixhealth.com',
-    featured: true,
+    tech: ['TypeScript', 'NestJS', 'Angular SSR', 'AWS', 'Firebase', 'GPU'],
+    live: null,
+    status: 'inDev',
+    featured: false,
     accent: '#8b5cf6',
   },
   {
@@ -65,16 +88,6 @@ export const projects = [
     featured: false,
     accent: '#0e7490',
     live:'https://landwash-app.vercel.app'
-  },
-  {
-    id: 12,
-    title: 'Factunorm',
-    tagline: 'Legally compliant e-invoicing for French micro-entrepreneurs.',
-    favicon: '/favicons/factunorm.ico',
-    tech: ['TypeScript', 'NestJS'],
-    featured: false,
-    accent: '#4f46e5',
-    live:'https://factunorm.pages.dev'
   },
   {
     id: 10,
@@ -182,31 +195,39 @@ export const skills = [
   {
     category: 'Frontend',
     icon: 'Layout',
-    items: ['Angular (Signals, SSR)', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Turborepo / Nx', 'Socket.io'],
+    items: ['Angular 21 (Signals, SSR)', 'React / Next.js', 'Astro', 'TypeScript', 'Tailwind CSS', 'Nx / Turborepo'],
   },
   {
     category: 'Mobile',
     icon: 'Smartphone',
-    items: ['Flutter', 'Dart', 'FCM Push Notifications', 'Google Maps SDK', 'Hive (offline)', 'Geospatial'],
+    items: ['Capacitor (iOS / Android)', 'Expo / React Native', 'Flutter', 'RevenueCat IAP', 'Apple & Google Wallet passes', 'Store releases (fastlane)'],
   },
   {
     category: 'Backend',
     icon: 'Server',
-    items: ['NestJS', 'Python (FastAPI)', 'PostgreSQL', 'MongoDB', 'Prisma / Mongoose', 'BullMQ + Redis'],
+    items: ['NestJS', 'PostgreSQL + Row-Level Security', 'Prisma / MongoDB', 'BullMQ + Redis', 'Stripe billing (incl. SEPA)', 'Factur-X / EN 16931'],
   },
   {
     category: 'AI / ML',
     icon: 'Brain',
-    items: ['OpenAI API (GPT-4o)', 'WhisperX', 'Ollama (local LLMs)', 'Speaker Diarization', 'GPU Inference', 'Playwright scraping'],
+    items: ['OpenAI API', 'Gemini (OCR, extraction)', 'WhisperX', 'Ollama (local LLMs)', 'GPU inference', 'Agentic dev (Claude Code, multi-agent audits)'],
   },
   {
     category: 'Cloud / DevOps',
     icon: 'Cloud',
-    items: ['AWS EC2 / S3 / SDK', 'OVH / Tailscale VPN', 'Grafana + Loki + Prometheus', 'Docker + Nginx', 'Serverless Framework', 'Fly.io / Neon'],
+    items: ['Docker Compose + Caddy', 'OVH VPS & Kubernetes', 'Cloudflare (R2, Pages, Email)', 'AWS (EC2, S3)', 'Neon Postgres', 'Grafana + Loki + Prometheus'],
   },
 ]
 
 export const experience = [
+  {
+    role: 'Founder & Product Engineer',
+    company: 'Factunorm · iStampr',
+    period: '2026 — Present',
+    description: 'Designing, building, and running two SaaS products solo — a Factur-X e-invoicing platform used by 160+ French businesses, and a loyalty platform delivering cards as Apple and Google Wallet passes.',
+    highlights: ['Factur-X / EN 16931 compliance', 'Postgres RLS multi-tenancy', 'Stripe + RevenueCat billing', 'Apple & Google Wallet passes'],
+    current: true,
+  },
   {
     role: 'Full-Stack Engineer',
     company: 'MyPubli',

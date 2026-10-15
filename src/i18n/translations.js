@@ -11,10 +11,10 @@ export const translations = {
       openTo: 'Open to opportunities',
     },
     hero: {
-      tagline1: 'Full-stack engineer building',
-      tagline2: 'AI-powered products',
-      tagline3: 'and scalable software systems.',
-      bio: 'I engineer products that solve real problems — from robust backends and clean APIs to AI-integrated interfaces. I care about the full stack: performance, developer experience, and the end user.',
+      tagline1: 'Full-stack product engineer shipping',
+      tagline2: 'production SaaS end to end',
+      tagline3: '— web, mobile, payments, and infrastructure.',
+      bio: 'I take products from empty repo to real users on my own — API, web and native apps, billing, compliance, and the servers they run on. Lately: a French e-invoicing SaaS used by 160+ businesses and a loyalty platform that lives in Apple & Google Wallet.',
       viewProjects: 'View Projects',
       contactMe: 'Contact Me',
       downloadCV: 'Download CV',
@@ -26,10 +26,10 @@ export const translations = {
       sub: "I've spent the last several years building software that people actually use — from internal tools and APIs to full-stack SaaS products and AI integrations.",
       body: 'My approach is grounded in clarity: clean architecture, intentional abstractions, and code that the next engineer can reason about without a guide. I work best in small, focused teams where ownership is high and bureaucracy is low.',
       stats: [
-        { value: '5+', label: 'Years of\nexperience' },
+        { value: '6+', label: 'Years of\nexperience' },
         { value: '15+', label: 'Projects\nshipped' },
-        { value: 'Full', label: 'Stack\nengineer' },
-        { value: 'AI', label: 'Native\nbuilder' },
+        { value: '160+', label: 'Businesses on\nFactunorm' },
+        { value: '3', label: 'Live SaaS\nproducts' },
       ],
       cards: [
         {
@@ -59,6 +59,7 @@ export const translations = {
       visitLive: 'Visit live site',
       technicalDetails: 'Technical details',
       moreProjects: 'More work',
+      status: { inDev: 'In development' },
       items: {
         1: {
           tagline: 'Real-time collaborative AI writing for researchers.',
@@ -69,11 +70,6 @@ export const translations = {
           tagline: 'Premium watch e-commerce for Tunisia, bilingual with RTL.',
           snippet: 'Premium watch e-commerce for the Tunisian market. Shop in French or Arabic with full RTL layout, track your order in real time, and check out as a guest — no account required.',
           technical: 'Turborepo monorepo with 13+ NestJS feature modules (auth, catalog, cart, orders, promotions, reviews, delivery, notifications, analytics). Angular 21 SSR storefront for SEO with bilingual FR/AR and full RTL layout. Guest cart merge with stock-aware conflict resolution on login. Order state machine (PENDING → CONFIRMED → SHIPPED → DELIVERED) with full audit trail and immutable data snapshots at order time. 5-role RBAC, event-driven email queue with delivery state tracking, and a unified S3-compatible storage abstraction (Cloudflare R2 / RustFS) backed by Neon PostgreSQL.',
-        },
-        3: {
-          tagline: 'Four apps. One platform. Real-time enforcement, thermal printing, and geospatial parking.',
-          snippet: 'End-to-end parking management for Tunisian cities. Drivers park and pay from their phone; enforcement officers verify plates and print tickets in the field; operators manage zones from a web dashboard.',
-          technical: 'Four-app platform (Flutter driver app, Flutter enforcement app, Angular 17 admin, NestJS API) unified by a zone-based Socket.IO architecture — every session mutation broadcasts to zone rooms with real-time expiry warnings at 10 and 5 minutes via a minute-level cron. GPS coordinates validated against zone polygons using a ray-casting point-in-polygon algorithm; each session records location provenance (gps_auto | user_pin | zone_centroid) for enforcement auditing. HMAC-SHA256 signed ticket tokens verifiable without a database lookup. Three independent JWT strategies (drivers, operators, agents) merged via CombinedJwtAuthGuard. The enforcement app drives a Bluetooth thermal printer — Arabic text rendered as ESC/POS bitmap graphics since thermal printers don\'t natively support Arabic. The driver app uses Dart compile-time conditional exports to swap Google Maps (web) for Mapbox (native) at zero runtime cost, a fully custom Canvas circular duration picker, and deferred loading on 14 of 16 routes. Angular admin features Mapbox GL Draw with road-snapping for street boundary editing, Leaflet MarkerCluster for clustered visualization, and 4-tier RBAC (SUPER_ADMIN → SUPERVISOR) enforced at route, menu, and data levels.',
         },
         4: {
           tagline: 'API-first SaaS with a clean frontend and dedicated marketing site.',
@@ -86,9 +82,9 @@ export const translations = {
           technical: 'O(n log n) sweep line algorithm for real-time slot availability across multiple teams, and MongoDB 2dsphere geospatial queries for location-based booking assignment. Dual Firebase projects (client + intern apps) with FCM push notifications. Subscription management with auto-renewal. WordPress shortcode plugin for embedded web booking. Zero-downtime rolling deployments via GitHub Actions with automatic health-check verification and rollback. Resource-budgeted Docker Compose targeting OVH VPS. Rate-limited API with Helmet.js security headers.',
         },
         6: {
-          tagline: '5 years. One platform. Therapists, parents, kids, and doctors — united.',
-          snippet: 'Health platform connecting therapists, parents, children, and doctors in one place. Built over 5 years from a startup into a production SaaS used in real clinical workflows.',
-          technical: '9-service microservice platform serving parents, therapists, kids, and doctors. Multi-tenant architecture with Socket.io real-time updates, a gamification engine, and a GPU inference server. Integrates AWS CloudFront, S3, and Transcribe Streaming; Firebase (FCM, Firestore, RTDB) across services; ElevenLabs speech synthesis; and Stripe payments. GitHub Actions CI/CD with SSH-based rolling EC2 deployments and PM2 process clustering. Built and scaled over 5 years from zero to production.',
+          tagline: "Therapists, parents, kids, and doctors — one platform.",
+          snippet: "Health platform connecting therapists, parents, children, and doctors. Kids work through gamified emotion challenges, therapists follow progress remotely, and AI verifies each challenge. Built over 5 years; the next version is in development ahead of public launch.",
+          technical: "9-service platform serving parents, therapists, kids, and doctors. Multi-tenant architecture with Socket.io real-time updates, a gamification engine, and a GPU inference server that verifies challenge photos with AI. Angular SSR web app with Leaflet and Google Maps, and Node/NestJS APIs with PDFKit report generation. Integrates AWS CloudFront, S3, and Transcribe Streaming; Firebase (FCM, Firestore, RTDB); ElevenLabs speech synthesis; Google Translate; and Stripe payments. GitHub Actions CI/CD with SSH-based rolling EC2 deployments and PM2 process clustering.",
         },
         7: {
           tagline: 'Tunisia in your pocket — transport and tourism, natively mobile.',
@@ -116,9 +112,9 @@ export const translations = {
           technical: 'Payroll engine computing night-shift multipliers, overtime, and holiday bonuses from raw attendance records. MongoDB aggregation pipelines track vacation earned, used, and remaining per employee. Gate pass and invoice system with auto-generated reference codes, nested document population, and PDF export. Angular 17 standalone components with Material Design, JWT authentication, and role-based route guards.',
         },
         12: {
-          tagline: 'Legally compliant e-invoicing for French micro-entrepreneurs.',
-          snippet: 'E-invoicing SaaS for French freelancers. Generate legally compliant Factur-X invoices in seconds — validated, archived, and ready for the 2026 mandate.',
-          technical: 'Generates Factur-X 1.08 EXTENDED compliant PDF/A-3b invoices — CII XML embedded in the PDF and validated through a 3-gate pipeline: arithmetic checks → SIRET Luhn + INSEE API lookup → Factur-X schematron validation. CI/CD gates run veraPDF and Mustang CLI on every push. PostgreSQL Row-Level Security enforces tenant isolation at the database level — data leakage is impossible even if the ORM is bypassed. Per-SIREN sequence locking prevents duplicate invoice numbers. BullMQ async processing, Stripe subscription management, and WORM archiving on Cloudflare R2.',
+          tagline: "Compliant French e-invoicing for micro-entrepreneurs — web, iOS & Android.",
+          snippet: "E-invoicing SaaS for French freelancers and micro-businesses, ready for the national e-invoicing mandate. Create a compliant invoice in under two minutes — by form, by voice, or by scanning a receipt — on web, iOS, and Android. Used by 160+ businesses.",
+          technical: "Generates Factur-X 1.08 EXTENDED (EN 16931 + CIUS-FR) PDF/A-3 invoices with embedded CII XML, validated in CI on every push with Mustang and veraPDF. SIRET numbers are checked in real time against the INSEE SIRENE API, and invoices are transmitted through a certified e-invoicing platform (PA). PostgreSQL Row-Level Security isolates tenants at the database level — a dedicated non-bypass role plus a lint that fails the build on unscoped queries. Legal archives go to Cloudflare R2 under an append-only SHA-256 hash chain, so any tampering is detectable. Billing runs on Stripe (cards and SEPA Direct Debit) on the web and RevenueCat in-app purchases on iOS. Gemini extracts data from scanned purchase receipts. Nx monorepo: NestJS 11 API, Angular SSR, and Capacitor iOS/Android apps with self-hosted over-the-air updates, plus BullMQ/Redis jobs. A multi-agent security audit I ran surfaced 18 findings (2 critical); 16 are fixed.",
         },
         13: {
           tagline: '30-day cash flow forecasting with automatic solvency scoring.',
@@ -134,6 +130,11 @@ export const translations = {
           tagline: 'Web content in, publish-ready reels out — fully automated.',
           snippet: 'Paste a TikTok link or a topic, get a publish-ready short-form video back. Script, voiceover, footage, and subtitles — fully automated, no timeline editing.',
           technical: 'Playwright scrapes TikTok and web content with anti-detection handling. Whisper-timestamped transcribes audio with word-level timing for frame-accurate subtitle sync. GPT-4o generates short-form scripts with intelligent keyword retry — falls back to broader search terms when specific queries return no usable content. Content relevance filtering skips non-educational material before any expensive API call. ElevenLabs TTS produces the voiceover, Runway ML gen3 generates background footage, and MoviePy composites everything into a publish-ready reel — fully automated.',
+        },
+        16: {
+          tagline: "Digital loyalty cards that live in Apple & Google Wallet.",
+          snippet: "Loyalty platform for cafés, shops, and multi-location brands. Customers join by scanning a QR code and get a stamp or points card straight in Apple or Google Wallet — no app to download. Merchants run campaigns, reward regulars, and see who is drifting away.",
+          technical: "Issues Apple Wallet (PassKit) and Google Wallet passes with server-rendered stamp strips that update live after every scan, while staying within Google's per-pass notification quota. Stamp and points programs across multiple locations, with time-boxed campaign multipliers (highest wins on overlap). Nx monorepo: NestJS + Prisma/PostgreSQL API, Angular merchant console, Expo cashier app with OTA updates, and an Astro marketing site — translated into English, Polish, and French. CPU-heavy work (image rendering, password hashing, pass signing, PDFs) runs through a lane-based gate with two-tier load shedding, so a 4 GB VPS stays responsive under bursts. Push-to-deploy via a GitHub webhook, systemd, Redis, and Caddy.",
         },
       },
     },
@@ -157,6 +158,11 @@ export const translations = {
       subtitle: 'A condensed view of my professional path — focused on impact and scope rather than titles.',
       current: 'Current',
       items: [
+        {
+          role: 'Founder & Product Engineer',
+          description: 'Designing, building, and running two SaaS products solo. Factunorm: Factur-X e-invoicing used by 160+ French businesses, with web, iOS, and Android apps, Stripe and RevenueCat billing, Postgres Row-Level Security, and tamper-evident archiving. iStampr: a loyalty platform delivering stamp and points cards as Apple and Google Wallet passes, with a merchant console and a cashier app.',
+          highlights: ['Factur-X / EN 16931 compliance', 'Postgres RLS multi-tenancy', 'Stripe + RevenueCat billing', 'Apple & Google Wallet passes'],
+        },
         {
           role: 'Full-Stack Engineer',
           description: 'Building an AI-powered scientific publishing platform — real-time multi-user editing with Yjs CRDT, a multi-source reference resolver (DOI → CrossRef → PubMed → Scholar → ORCID), OpenAI integration with per-article cost tracking, and fully automated OVH infrastructure with dynamic subdomain assignment and Grafana observability.',
@@ -198,10 +204,10 @@ export const translations = {
       openTo: 'Ouvert aux opportunités',
     },
     hero: {
-      tagline1: 'Ingénieur full-stack qui construit des',
-      tagline2: 'produits propulsés par l\'IA',
-      tagline3: 'et des systèmes logiciels scalables.',
-      bio: "Je conçois des produits qui résolvent de vrais problèmes — des backends robustes et des APIs propres aux interfaces intégrées à l'IA. Je me soucie de l'ensemble du stack : performance, expérience développeur et utilisateur final.",
+      tagline1: 'Ingénieur produit full-stack qui livre des',
+      tagline2: 'SaaS en production de bout en bout',
+      tagline3: '— web, mobile, paiements et infrastructure.',
+      bio: "J'emmène seul des produits du dépôt vide jusqu'à de vrais utilisateurs — API, apps web et natives, facturation, conformité et les serveurs qui les font tourner. Récemment : un SaaS de facturation électronique utilisé par plus de 160 entreprises et une plateforme de fidélité intégrée à Apple et Google Wallet.",
       viewProjects: 'Voir les projets',
       contactMe: 'Me contacter',
       downloadCV: 'Télécharger CV',
@@ -213,10 +219,10 @@ export const translations = {
       sub: "J'ai passé ces dernières années à construire des logiciels que les gens utilisent réellement — des outils internes et APIs aux produits SaaS full-stack et intégrations IA.",
       body: "Mon approche est ancrée dans la clarté : une architecture propre, des abstractions intentionnelles et du code sur lequel le prochain ingénieur peut raisonner sans guide. Je travaille mieux dans des équipes petites et concentrées où la responsabilité est élevée et la bureaucratie est faible.",
       stats: [
-        { value: '5+', label: "Ans d'\nexpérience" },
+        { value: '6+', label: "Ans d'\nexpérience" },
         { value: '15+', label: 'Projets\nlivrés' },
-        { value: 'Full', label: 'Ingénieur\nfull-stack' },
-        { value: 'IA', label: 'Développeur\nIA natif' },
+        { value: '160+', label: 'Entreprises sur\nFactunorm' },
+        { value: '3', label: 'SaaS\nen production' },
       ],
       cards: [
         {
@@ -246,6 +252,7 @@ export const translations = {
       visitLive: 'Voir le site',
       technicalDetails: 'Détails techniques',
       moreProjects: 'Autres projets',
+      status: { inDev: 'En développement' },
       items: {
         1: {
           tagline: "Écriture scientifique collaborative en temps réel, propulsée par l'IA.",
@@ -256,11 +263,6 @@ export const translations = {
           tagline: "E-commerce de montres premium pour la Tunisie, bilingue avec RTL.",
           snippet: "E-commerce de montres premium pour le marché tunisien. Achetez en français ou en arabe avec layout RTL complet, suivez votre commande en temps réel et commandez en invité — sans compte.",
           technical: "Monorepo Turborepo avec 13+ modules NestJS (auth, catalogue, panier, commandes, promotions, avis, livraison, notifications, analytics). Storefront Angular 21 SSR pour le SEO, bilingue FR/AR avec layout RTL complet. Fusion de paniers invités avec résolution de conflits de stock à la connexion. Machine à états des commandes (EN ATTENTE → CONFIRMÉE → EXPÉDIÉE → LIVRÉE) avec audit complet et snapshots immuables. RBAC 5 rôles, file d'emails événementielle avec suivi de livraison, et abstraction de stockage S3-compatible (Cloudflare R2 / RustFS) sur Neon PostgreSQL.",
-        },
-        3: {
-          tagline: "Quatre apps. Une plateforme. Gestion temps réel, impression thermique et parking géospatial.",
-          snippet: "Gestion de stationnement de bout en bout pour les villes tunisiennes. Les conducteurs se garent et paient depuis leur téléphone ; les agents vérifient les plaques et impriment les amendes sur le terrain ; les opérateurs gèrent les zones depuis un tableau de bord web.",
-          technical: "Plateforme en 4 applications (app Flutter conducteurs, app Flutter agents, admin Angular 17, API NestJS) unifiée par une architecture Socket.IO par zones — chaque mutation de session diffuse en temps réel avec des avertissements d'expiration à 10 et 5 minutes via un cron à la minute. Les coordonnées GPS sont validées contre les polygones de zones par un algorithme de ray-casting point-dans-polygone ; chaque session enregistre la provenance de la localisation (gps_auto | user_pin | zone_centroid). Les tokens de tickets signés HMAC-SHA256 sont vérifiables sans requête base de données. Trois stratégies JWT indépendantes (conducteurs, opérateurs, agents) fusionnent via CombinedJwtAuthGuard. L'app agents pilote une imprimante thermique Bluetooth — le texte arabe est rendu en bitmap ESC/POS car les imprimantes thermiques ne supportent pas nativement l'arabe. L'app conducteurs utilise les exports conditionnels Dart pour basculer entre Google Maps (web) et Mapbox (natif) à la compilation, un sélecteur de durée circulaire Canvas entièrement personnalisé, et le chargement différé sur 14 des 16 routes. L'admin Angular propose Mapbox GL Draw avec accrochage aux routes, Leaflet MarkerCluster pour la visualisation groupée, et RBAC 4 niveaux (SUPER_ADMIN → SUPERVISOR) appliqué aux routes, menus et données.",
         },
         4: {
           tagline: "SaaS API-first avec un frontend épuré et un site marketing dédié.",
@@ -273,9 +275,9 @@ export const translations = {
           technical: "Algorithme de balayage O(n log n) pour la disponibilité des créneaux en temps réel sur plusieurs équipes, et requêtes géospatiales MongoDB 2dsphere pour l'assignation géolocalisée des réservations. Deux projets Firebase distincts (apps client et intervenant) avec notifications FCM. Gestion des abonnements avec renouvellement automatique. Plugin shortcode WordPress pour la réservation web embarquée. Déploiements rolling sans interruption via GitHub Actions avec vérification automatique des health checks et rollback. API limitée en débit avec headers de sécurité Helmet.js.",
         },
         6: {
-          tagline: "5 ans. Une plateforme. Thérapeutes, parents, enfants et médecins — réunis.",
-          snippet: "Plateforme de santé connectant thérapeutes, parents, enfants et médecins. Construite sur 5 ans d'une startup vers un SaaS de production utilisé dans de vrais parcours cliniques.",
-          technical: "Plateforme microservices en 9 services pour parents, thérapeutes, enfants et médecins. Architecture multi-tenant avec Socket.io temps réel, moteur de gamification et serveur GPU pour l'inférence. Intègre AWS CloudFront, S3 et Transcribe Streaming ; Firebase (FCM, Firestore, RTDB) sur plusieurs services ; synthèse vocale ElevenLabs ; et paiements Stripe. CI/CD GitHub Actions avec déploiements rolling EC2 par SSH et clustering PM2. Construit et fait évoluer sur 5 ans, de zéro à la production.",
+          tagline: "Thérapeutes, parents, enfants et médecins — une seule plateforme.",
+          snippet: "Plateforme de santé reliant thérapeutes, parents, enfants et médecins. Les enfants relèvent des défis émotionnels gamifiés, les thérapeutes suivent leurs progrès à distance et l'IA vérifie chaque défi. Construite sur 5 ans ; la nouvelle version est en développement avant son lancement public.",
+          technical: "Plateforme de 9 services pour parents, thérapeutes, enfants et médecins. Architecture multi-tenant avec Socket.io temps réel, moteur de gamification et serveur d'inférence GPU qui vérifie les photos des défis par IA. Application web Angular SSR avec Leaflet et Google Maps, APIs Node/NestJS avec génération de rapports PDFKit. Intègre AWS CloudFront, S3 et Transcribe Streaming ; Firebase (FCM, Firestore, RTDB) ; synthèse vocale ElevenLabs ; Google Translate ; et paiements Stripe. CI/CD GitHub Actions avec déploiements rolling EC2 par SSH et clustering PM2.",
         },
         7: {
           tagline: "La Tunisie dans votre poche — transport et tourisme, nativement mobile.",
@@ -303,9 +305,9 @@ export const translations = {
           technical: "Moteur de paie calculant les majorations de nuit, heures supplémentaires et primes de jours fériés à partir des pointages bruts. Pipelines d'agrégation MongoDB pour le suivi des congés acquis, pris et restants par employé. Système de bons de sortie et factures avec codes auto-générés, population de documents imbriqués et export PDF. Composants Angular 17 standalone avec Material Design, authentification JWT et gardes de routes basés sur les rôles.",
         },
         12: {
-          tagline: "Facturation électronique conforme à la loi pour les micro-entrepreneurs français.",
-          snippet: "SaaS de facturation pour les freelances français. Générez des factures Factur-X conformes en quelques secondes — validées, archivées, prêtes pour l'obligation 2026.",
-          technical: "Génère des factures PDF/A-3b conformes Factur-X 1.08 EXTENDED — XML CII embarqué dans le PDF et validé par un pipeline en 3 étapes : vérifications arithmétiques → contrôle SIRET Luhn + API INSEE → validation schematron Factur-X. Les gates CI/CD exécutent veraPDF et Mustang CLI à chaque push. La Row-Level Security PostgreSQL impose l'isolation des tenants au niveau base de données — aucune fuite possible même en contournant l'ORM. Verrouillage de séquence par SIREN pour éviter les doublons. Traitement asynchrone BullMQ, abonnements Stripe et archivage WORM sur Cloudflare R2.",
+          tagline: "Facturation électronique conforme pour les micro-entrepreneurs — web, iOS et Android.",
+          snippet: "SaaS de facturation électronique pour les indépendants et micro-entreprises français, prêt pour la réforme de la facturation électronique. Une facture conforme en moins de deux minutes — par formulaire, à la voix ou en scannant un justificatif — sur web, iOS et Android. Utilisé par plus de 160 entreprises.",
+          technical: "Génère des factures PDF/A-3 Factur-X 1.08 EXTENDED (EN 16931 + CIUS-FR) avec XML CII embarqué, validées en CI à chaque push par Mustang et veraPDF. Les SIRET sont vérifiés en temps réel via l'API INSEE SIRENE, et les factures sont transmises via une plateforme agréée (PA). La Row-Level Security PostgreSQL isole les tenants au niveau de la base — rôle sans contournement dédié et lint qui fait échouer le build sur toute requête non scopée. Les archives légales sont stockées sur Cloudflare R2 sous une chaîne de hachage SHA-256 en ajout seul : toute altération est détectable. Facturation via Stripe (carte et prélèvement SEPA) sur le web et achats intégrés RevenueCat sur iOS. Gemini extrait les données des justificatifs d'achat scannés. Monorepo Nx : API NestJS 11, Angular SSR, apps Capacitor iOS/Android avec mises à jour OTA auto-hébergées, et jobs BullMQ/Redis. Un audit de sécurité multi-agents que j'ai mené a relevé 18 failles (dont 2 critiques) ; 16 sont corrigées.",
         },
         13: {
           tagline: "Prévisions de trésorerie à 30 jours avec scoring de solvabilité automatique.",
@@ -321,6 +323,11 @@ export const translations = {
           tagline: "Contenu web en entrée, vidéos prêtes à publier en sortie — entièrement automatisé.",
           snippet: "Collez un lien TikTok ou un sujet, obtenez une vidéo courte prête à publier. Script, voix-off, images et sous-titres — entièrement automatisé, sans montage.",
           technical: "Playwright scrape TikTok et le web avec gestion anti-détection. Whisper-timestamped transcrit l'audio avec un timing mot par mot pour une synchronisation des sous-titres précise à l'image. GPT-4o génère des scripts courts avec retry intelligent sur les mots-clés — repli vers des termes plus larges si la recherche spécifique ne retourne rien. Un filtre de pertinence écarte le contenu non éducatif avant tout appel API coûteux. ElevenLabs TTS produit la voix-off, Runway ML gen3 génère la vidéo de fond, MoviePy composite le tout en une vidéo prête à publier — entièrement automatisé.",
+        },
+        16: {
+          tagline: "Des cartes de fidélité qui vivent dans Apple et Google Wallet.",
+          snippet: "Plateforme de fidélité pour cafés, commerces et enseignes multi-sites. Le client scanne un QR code et reçoit une carte à tampons ou à points directement dans Apple ou Google Wallet — aucune app à télécharger. Le commerçant lance des campagnes, récompense ses habitués et repère ceux qui décrochent.",
+          technical: "Émet des passes Apple Wallet (PassKit) et Google Wallet avec des bandeaux de tampons rendus côté serveur, mis à jour en direct après chaque scan tout en respectant le quota de notifications de Google par passe. Programmes à tampons et à points sur plusieurs établissements, avec campagnes multiplicatrices limitées dans le temps (la plus forte l'emporte en cas de chevauchement). Monorepo Nx : API NestJS + Prisma/PostgreSQL, console commerçant Angular, app caisse Expo avec mises à jour OTA et site marketing Astro — traduits en anglais, polonais et français. Les tâches lourdes (rendu d'images, hachage de mots de passe, signature des passes, PDF) passent par une file à couloirs avec délestage à deux niveaux, pour qu'un VPS de 4 Go reste réactif lors des pics. Déploiement au push via webhook GitHub, systemd, Redis et Caddy.",
         },
       },
     },
@@ -344,6 +351,11 @@ export const translations = {
       subtitle: "Un aperçu condensé de mon parcours professionnel — axé sur l'impact et la portée plutôt que sur les titres.",
       current: 'En cours',
       items: [
+        {
+          role: 'Fondateur & Ingénieur Produit',
+          description: "Conception, développement et exploitation de deux produits SaaS en solo. Factunorm : facturation électronique Factur-X utilisée par plus de 160 entreprises françaises, avec apps web, iOS et Android, facturation Stripe et RevenueCat, Row-Level Security PostgreSQL et archivage infalsifiable. iStampr : plateforme de fidélité qui délivre des cartes à tampons et à points sous forme de passes Apple et Google Wallet, avec console commerçant et app caisse.",
+          highlights: ['Conformité Factur-X / EN 16931', 'Multi-tenant RLS PostgreSQL', 'Facturation Stripe + RevenueCat', 'Passes Apple & Google Wallet'],
+        },
         {
           role: 'Ingénieur Full-Stack',
           description: "Construction d'une plateforme de publication scientifique propulsée par l'IA — édition multi-utilisateurs en temps réel avec Yjs CRDT, résolution de références multi-sources (DOI → CrossRef → PubMed → Scholar → ORCID), intégration OpenAI avec suivi des coûts par article, et infrastructure OVH entièrement automatisée avec assignation dynamique de sous-domaines et observabilité Grafana.",

@@ -1,6 +1,6 @@
 # Aziz Ben Ayed
 
-Full-stack engineer based in Tunisia — building AI-powered products and scalable software systems.
+Full-stack product engineer based in Tunisia — shipping production SaaS end to end: web, mobile, payments, and infrastructure.
 
 I care about the full stack: clean architecture, sharp interfaces, and software that solves real problems.
 
