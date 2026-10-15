@@ -119,7 +119,7 @@ export default function CVDocument({ lang = 'en', tr }) {
                   <Text style={s.expPeriod}>{exp.period}</Text>
                 </View>
                 <Text style={s.expCompany}>{exp.company}</Text>
-                <Text style={s.expDesc}>{trExp.description || exp.description}</Text>
+                <Text style={s.expDesc}>{(trExp.description || exp.description).replace(/→/g, '>') /* PDF font has no arrow glyph */}</Text>
                 <View style={s.chipsRow}>
                   {(trExp.highlights || exp.highlights).map((h, j) => <Text key={j} style={s.chip}>{h}</Text>)}
                 </View>
@@ -141,9 +141,10 @@ export default function CVDocument({ lang = 'en', tr }) {
 
         {/* ── Projects ── */}
         <View style={s.section}>
-          <Text style={s.sectionHead}>{L.projects}  ·  {projects.length} {L.shipped}</Text>
+          <Text style={s.sectionHead}>{L.projects}  ·  {projects.filter(p => !p.status).length} {L.shipped}</Text>
           <View style={s.projGrid}>
-            {projects.map((proj, i) => {
+            {/* ponytail: top 12 keeps the CV to one A4 page; raise if the layout tightens */}
+            {projects.slice(0, 12).map((proj, i) => {
               const trProj = tr?.projects?.items?.[proj.id] || {}
               return (
                 <View key={i} style={s.projCard}>
@@ -151,7 +152,7 @@ export default function CVDocument({ lang = 'en', tr }) {
                     ? <Link src={proj.live} style={s.projTitleLink}>{proj.title}</Link>
                     : <Text style={s.projTitle}>{proj.title}</Text>
                   }
-                  <Text style={s.projTagline}>{trProj.tagline || proj.tagline}</Text>
+                  <Text style={s.projTagline}>{trProj.tagline || proj.tagline}{proj.status ? `  (${tr?.projects?.status?.[proj.status]})` : ''}</Text>
                 </View>
               )
             })}
