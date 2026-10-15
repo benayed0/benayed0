@@ -213,8 +213,14 @@ function ScreenshotLightbox({ srcs, startIndex, accent, onClose }) {
           position: 'relative',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           maxWidth: '92vw', maxHeight: '88vh',
+          touchAction: 'none',
         }}
         onClick={e => e.stopPropagation()}
+        onPanEnd={(_, { offset, velocity }) => {
+          if (count <= 1 || Math.abs(offset.x) < Math.abs(offset.y)) return
+          if (offset.x < -40 || velocity.x < -400) next()
+          else if (offset.x > 40 || velocity.x > 400) prev()
+        }}
       >
         {/* Prev */}
         {count > 1 && (
@@ -374,10 +380,23 @@ function ScreenshotShowcase({ screenshots, accent, url, frame = 'browser', compa
 
   const goTo = (i) => { setActive(i); setProgress(0) }
 
+  // Swipe / drag horizontally to change slide; vertical page scroll stays native (touch-action: pan-y)
+  const swiped = useRef(0)
+  const onPanEnd = (_, { offset, velocity }) => {
+    if (count <= 1 || Math.abs(offset.x) < Math.abs(offset.y)) return
+    const dir = offset.x < -40 || velocity.x < -400 ? 1 : offset.x > 40 || velocity.x > 400 ? -1 : 0
+    if (!dir) return
+    swiped.current = Date.now() // lets the click that ends the drag be ignored
+    goTo((active + dir + count) % count)
+  }
+
   const base = import.meta.env.BASE_URL.replace(/\/$/, '')
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+    <motion.div
+      onPanEnd={onPanEnd}
+      style={{ display: 'flex', flexDirection: 'column', gap: 14, touchAction: 'pan-y' }}
+    >
 
       {frame === 'phone' ? (
         /* ── Phone fan: active screen in front, neighbours tilted behind ── */
@@ -411,7 +430,7 @@ function ScreenshotShowcase({ screenshots, accent, url, frame = 'browser', compa
                   src={base + src}
                   alt=""
                   draggable={false}
-                  onClick={() => (off ? goTo(i) : setLightboxOpen(true))}
+                  onClick={() => { if (Date.now() - swiped.current < 300) return; off ? goTo(i) : setLightboxOpen(true) }}
                   initial={false}
                   animate={{
                     x: `${-50 + off * 62}%`,
@@ -613,7 +632,7 @@ function ScreenshotShowcase({ screenshots, accent, url, frame = 'browser', compa
           />
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   )
 }
 
